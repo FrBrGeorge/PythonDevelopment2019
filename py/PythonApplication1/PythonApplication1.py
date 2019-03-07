@@ -11,6 +11,9 @@ bt.grid()
 bt2 = Button(root, text = "bind")
 bt2.grid()
 bt2.bind('<Button 1>', fnb)
+
+btq = Button(root, command = root.destroy, text = "quit")
+btq.grid()
 root.mainloop()
 
 print("A")
