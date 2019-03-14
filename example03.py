@@ -2,7 +2,7 @@
 '''
 Пример для первой лекции про TkInter
 
-Складывание двух кнопок. Выход из mainloop.
+Закрытие окошка в постинтерактивном режиме
 '''
 
 from tkinter import *
@@ -20,3 +20,4 @@ Exit = Button(root, text="QuiEt!", command=root.quit)
 Exit.grid()
 root.mainloop()
 print("Done")
+#root.destroy()
