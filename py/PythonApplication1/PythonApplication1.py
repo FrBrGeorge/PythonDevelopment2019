@@ -10,8 +10,11 @@ def move(*args):
         txt.place(x=i,y=i)
         time.sleep(0.1)
 
-root = Tk()
-root.title("=)")
+TKroot = Tk()
+TKroot.title("=)")
+root = Frame(TKroot)
+root.pack(fill = BOTH, expand = 1)
+
 root.columnconfigure(0, weight = 1)
 root.columnconfigure(1, weight = 2)
 root.rowconfigure(0, weight = 1)
