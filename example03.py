@@ -2,7 +2,7 @@
 '''
 Пример для первой лекции про TkInter
 
-Действие по умолчанию для кнопки (очевидно, клик)
+Явная привязка обработчика к событию
 '''
 
 from tkinter import *
@@ -13,7 +13,8 @@ def dump(*args):
 root = Tk()
 root.title("Hello")
 
-Butt = Button(root, text="Butt ON", command=dump)
+Butt = Button(root, text="Butt ON")
+Butt.bind('<Button-1>', dump)
 Butt.grid()
 root.mainloop()
 
