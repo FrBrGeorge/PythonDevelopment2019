@@ -10,8 +10,11 @@ from tkinter import *
 def dump(*args):
     print("DUMP:",args)
 
-root = Tk()
-root.title("Hello")
+TKroot = Tk()
+TKroot.title("Hello")
+
+root = Frame(TKroot)
+root.place(relx=0, rely=0, relheight=1, relwidth=1)
 
 root.columnconfigure(0, weight=1)
 root.columnconfigure(1, weight=2)
@@ -26,6 +29,6 @@ Exit.grid(row=0, column=1, sticky=E+W+S+N)
 Txt = Label(root, text="This is a label", bg="PeachPuff")
 Txt.grid(row=1, column=0, columnspan=2, sticky=E+W+N)
 
-root.mainloop()
+TKroot.mainloop()
 print("Done")
 #root.destroy()
