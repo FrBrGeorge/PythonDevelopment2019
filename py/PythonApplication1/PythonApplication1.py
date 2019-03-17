@@ -13,7 +13,7 @@ def bt3_func(*args):
 TKroot = Tk()
 TKroot.title("=)")
 root = Frame(TKroot)
-root.pack(fill = BOTH, expand = 1)
+root.place(relheight = 1.0, relwidth = 1.0)
 
 root.columnconfigure(0, weight = 1)
 root.columnconfigure(1, weight = 2)
