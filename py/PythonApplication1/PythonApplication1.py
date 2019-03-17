@@ -8,8 +8,9 @@ def bt_func(*args):
     txt.grid(row = 1, column = 1, sticky = W + E + N + S)
 
 def bt3_func(*args):
-    txt.configure(bg = "#%06x" % random.randint(0, 0xFFFFFF), fg = "#%06x" % random.randint(0, 0xFFFFFF))
-
+    txt.configure(bg = "#%02x%02x%02x" % (random.randint(0xAA, 0xFF),random.randint(0xAA, 0xFF),random.randint(0xAA, 0xFF)))
+    txt.configure(fg = "#%02x%02x%02x" % (random.randint(0x00, 0x66),random.randint(0x00, 0x66),random.randint(0x00, 0x66)))
+                 
 TKroot = Tk()
 TKroot.title("=)")
 root = Frame(TKroot)
