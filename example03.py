@@ -4,6 +4,7 @@ Homework on 04_PublishingAndGeometry
 '''
 
 from tkinter import *
+import rgb
 
 def dump(*args, **argp):
     '''Prints any of arguments passed'''
