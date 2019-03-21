@@ -1,14 +1,13 @@
 #!/usr/bin/env python3
 '''
-Пример для первой лекции про TkInter
-
-Закрытие окошка в постинтерактивном режиме
+Homework on 04_PublishingAndGeometry
 '''
 
 from tkinter import *
 
-def dump(*args):
-    print("DUMP:",args)
+def dump(*args, **argp):
+    '''Prints any of arguments passed'''
+    print("DUMP:",args,argp)
 
 TKroot = Tk()
 TKroot.title("Hello")
