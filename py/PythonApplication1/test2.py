@@ -5,23 +5,29 @@
 
 from tkinter import *
 
+def dump(*args):
+    print(args)
+
 def GetText(*args):
     print(txt.get())
 
 def PutText(*args):
     t = txt.get()
-    txt2.delete(0, END)
-    txt2.insert(0, t)
-
+    s.set(t)
+    
 TKroot = Tk()
 TKroot.title("=)")
 root = Frame(TKroot)
 root.place(relheight = 1.0, relwidth = 1.0)
 
-txt = Entry(root, text = "TEXT")
+s = StringVar()
+s.set("Hello")
+s.trace("w", dump)
+
+txt = Entry(root)
 txt.grid(columnspan =2)
 
-txt2 = Entry(root, text = "TEXT2")
+txt2 = Entry(root, textvariable = s)
 txt2.grid(columnspan =2)
 
 getBT = Button(root, text = "get", command =GetText)
