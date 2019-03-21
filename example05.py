@@ -3,6 +3,8 @@
 Пример работы с редактируемым текстом
 '''
 
+# MORE JUNKER COMMENT
+
 from tkinter import *
 
 def dump(*args):
