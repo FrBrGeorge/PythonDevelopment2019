@@ -11,15 +11,19 @@ def dump(*args, **argp):
     '''Prints any of arguments passed'''
     print("DUMP:",args,argp)
 
+def randomcolor(bright=True):
+    b, d = "ABCDEF", "0123456"
+    return "#"+"".join(random.choice(c)+random.choice(b+d) for c in random.sample(((b,b,b,d,d) if bright else (d,d,d)), 3))
+
 def addadd():
     '''Add new Button/label pair to root'''
     # Here's a trick, callback is generated too!
     def c():
         '''Change colors of this very l and b'''
-        l["background"]=random.choice(tuple(Colors))
-        l["foreground"]=random.choice(tuple(Colors))
-        b["background"]=random.choice(tuple(Colors))
-        b["foreground"]=random.choice(tuple(Colors))
+        l["background"]=randomcolor(False)
+        l["foreground"]=randomcolor(True)
+        b["background"]=randomcolor(True)
+        b["foreground"]=randomcolor(False)
 
     b = Button(root, text="Color", command=c)
     l = Label(root, text="Color")
