@@ -34,5 +34,5 @@ bt3.bind('<Button 1>', bt3_func)
 txt = Label(root, text="LABELLABELLABELLABELLABEL")
 
 
-root.mainloop()
+TKroot.mainloop()
 
