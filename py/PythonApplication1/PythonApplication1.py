@@ -2,7 +2,7 @@
 from tkinter import * 
 import time
 import random 
-
+    
 def bt_func(*args):
     bt3.grid(row = 1, column = 0, sticky = W + E + N + S)
     txt.grid(row = 1, column = 1, sticky = W + E + N + S)
@@ -32,6 +32,7 @@ bt3 = Button(root, text = "BUTTON", bg = "darkRED", fg = "peachpuff")
 bt3.bind('<Button 1>', bt3_func)
 
 txt = Label(root, text="LABELLABELLABELLABELLABEL")
+
 
 
 TKroot.mainloop()
