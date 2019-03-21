@@ -4,7 +4,8 @@ Homework on 04_PublishingAndGeometry
 '''
 
 from tkinter import *
-import rgb
+from rgb import Colors
+import random
 
 def dump(*args, **argp):
     '''Prints any of arguments passed'''
@@ -12,7 +13,15 @@ def dump(*args, **argp):
 
 def addadd():
     '''Add new Button/label pair to root'''
-    b = Button(root, text="Color")
+    # Here's a trick, callback is generated too!
+    def c():
+        '''Change colors of this very l and b'''
+        l["background"]=random.choice(tuple(Colors))
+        l["foreground"]=random.choice(tuple(Colors))
+        b["background"]=random.choice(tuple(Colors))
+        b["foreground"]=random.choice(tuple(Colors))
+
+    b = Button(root, text="Color", command=c)
     l = Label(root, text="Color")
     c, r = root.size()
     root.rowconfigure(r+1, weight=1)
