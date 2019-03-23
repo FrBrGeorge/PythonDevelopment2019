@@ -5,6 +5,8 @@
 Закрытие окошка в постинтерактивном режиме
 '''
 
+#Alexandr Shcherbakov 622
+
 from tkinter import *
 
 def dump(*args):
