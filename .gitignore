@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -102,3 +103,10 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+=======
+.vs
+
+py/PythonApplication1/.vs
+py/PythonApplication1/PythonApplication1.pyproj
+py/PythonApplication1/PythonApplication1.sln
+>>>>>>> MyProject/master
