@@ -1,2 +1,2 @@
-# PythonDevelopment2019
-Python3 collaborative application development  MSU CMC/2019
+Кислицын Виктор 304 группа
+Это я наверное не очень красиво все склеил
