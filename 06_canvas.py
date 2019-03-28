@@ -13,10 +13,18 @@ class App(Frame):
         self.master.title(Title)
         self.grid(sticky=N+E+S+W)
         self.create()
+        self.adjust()
 
     def create(self):
         self.bQuit = Button(self, text='Quit', command=self.quit)
         self.bQuit.grid()
+
+    def adjust(self):
+        # TODO Smart detecting resizeable/still/wide cells
+        for i in range(self.size()[0]):
+            self.columnconfigure(i, weight=12)
+        for i in range(self.size()[1]):
+            self.rowconfigure(i, weight=12)
         
 class Paint(Canvas):
     def mousedown(self, event):
