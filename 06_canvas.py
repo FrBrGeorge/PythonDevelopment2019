@@ -20,13 +20,14 @@ class App(Frame):
         
 class Paint(Canvas):
     def mousedown(self, event):
-        print(event)
+        self.x0, self.y0 = event.x, event.y
 
     def mousemove(self, event):
-        print(event)
+        l=self.create_line((self.x0, self.y0, event.x, event.y))
+        print(l)
 
     def mouseup(self, event):
-        print(event)
+        print(self.find_all())
 
     def __init__(self, master=None):
         Canvas.__init__(self, master)
@@ -38,6 +39,8 @@ class MyApp(App):
     def create(self):
         self.Canvas = Paint(self)
         self.Canvas.grid(row=0, column=0, sticky=N+E+S+W)
+        self.Quit = Button(self, text="Quit", command=self.quit)
+        self.Quit.grid(row=0, column=1, sticky=N+W)
 
 app = MyApp(Title="Canvas Example")
 app.mainloop()
