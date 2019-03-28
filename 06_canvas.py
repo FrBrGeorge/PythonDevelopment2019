@@ -41,7 +41,7 @@ class Paint(Canvas):
         '''Do sometheing when drag a mouse'''
         if self.cursor:
             self.delete(self.cursor)
-        self.cursor = self.create_line((self.x0, self.y0, event.x, event.y), fill=self.foreground)
+        self.cursor = self.create_line((self.x0, self.y0, event.x, event.y), fill=self.foreground.get())
 
     def mouseup(self, event):
         '''Dragging is done'''
@@ -49,7 +49,8 @@ class Paint(Canvas):
         #print(self.find_all())
 
     def __init__(self, master=None, *ap, foreground="black", **an):
-        self.foreground = foreground
+        self.foreground = StringVar()
+        self.foreground.set(foreground)
         Canvas.__init__(self, master, *ap, **an)
         self.bind("<Button-1>", self.mousedown)
         self.bind("<B1-Motion>", self.mousemove)
@@ -57,15 +58,17 @@ class Paint(Canvas):
 
 class MyApp(App):
     def askcolor(self):
-        self.Canvas.foreground = colorchooser.askcolor()[1]
+        self.Canvas.foreground.set(colorchooser.askcolor()[1])
 
     def create(self):
         self.Canvas = Paint(self, foreground="midnightblue")
-        self.Canvas.grid(row=0, column=0, sticky=N+E+S+W)
+        self.Canvas.grid(row=0, column=0, rowspan=3, sticky=N+E+S+W)
         self.AskColor = Button(self, text="Color", command=self.askcolor)
-        self.AskColor.grid(row=1, column=1, sticky=N+W)
+        self.AskColor.grid(row=0, column=1, sticky=N+W)
+        self.ShowColor = Label(self, textvariable=self.Canvas.foreground)
+        self.ShowColor.grid(row=1, column=1, sticky=N+W+E)
         self.Quit = Button(self, text="Quit", command=self.quit)
-        self.Quit.grid(row=0, column=1, sticky=N+W)
+        self.Quit.grid(row=2, column=1, sticky=N+W)
 
 app = MyApp(Title="Canvas Example")
 app.mainloop()
