@@ -19,12 +19,20 @@ class App(Frame):
         self.bQuit.grid()
         
 class Paint(Canvas):
-    def buttondown(*args):
-        print(*args)
+    def mousedown(self, event):
+        print(event)
+
+    def mousemove(self, event):
+        print(event)
+
+    def mouseup(self, event):
+        print(event)
 
     def __init__(self, master=None):
         Canvas.__init__(self, master)
-        self.bind("<Button-1>", self.buttondown)
+        self.bind("<Button-1>", self.mousedown)
+        self.bind("<B1-Motion>", self.mousemove)
+        self.bind("<ButtonRelease-1>", self.mouseup)
 
 class MyApp(App):
     def create(self):
