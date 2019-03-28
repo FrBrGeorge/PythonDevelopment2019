@@ -34,15 +34,18 @@ class Paint(Canvas):
     def mousedown(self, event):
         '''Store mousedown coords'''
         self.x0, self.y0 = event.x, event.y
+        self.cursor = None
 
     def mousemove(self, event):
         '''Do sometheing when drag a mouse'''
-        l=self.create_line((self.x0, self.y0, event.x, event.y))
-        print(l)
+        if self.cursor:
+            self.delete(self.cursor)
+        self.cursor = self.create_line((self.x0, self.y0, event.x, event.y))
 
     def mouseup(self, event):
         '''Dragging is done'''
-        print(self.find_all())
+        self.cursor = None
+        #print(self.find_all())
 
     def __init__(self, master=None):
         Canvas.__init__(self, master)
@@ -59,3 +62,4 @@ class MyApp(App):
 
 app = MyApp(Title="Canvas Example")
 app.mainloop()
+print(app.Canvas.find_all())
