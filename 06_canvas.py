@@ -40,22 +40,26 @@ class Paint(Canvas):
         '''Do sometheing when drag a mouse'''
         if self.cursor:
             self.delete(self.cursor)
-        self.cursor = self.create_line((self.x0, self.y0, event.x, event.y))
+        self.cursor = self.create_line((self.x0, self.y0, event.x, event.y), fill=self.foreground)
 
     def mouseup(self, event):
         '''Dragging is done'''
         self.cursor = None
         #print(self.find_all())
 
-    def __init__(self, master=None):
-        Canvas.__init__(self, master)
+    def __init__(self, master=None, *ap, foreground="black", **an):
+        self.foreground = foreground
+        Canvas.__init__(self, master, *ap, **an)
         self.bind("<Button-1>", self.mousedown)
         self.bind("<B1-Motion>", self.mousemove)
         self.bind("<ButtonRelease-1>", self.mouseup)
 
 class MyApp(App):
+    def askcolor(self):
+        pass
+
     def create(self):
-        self.Canvas = Paint(self)
+        self.Canvas = Paint(self, foreground="midnightblue")
         self.Canvas.grid(row=0, column=0, sticky=N+E+S+W)
         self.Quit = Button(self, text="Quit", command=self.quit)
         self.Quit.grid(row=0, column=1, sticky=N+W)
