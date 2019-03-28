@@ -4,6 +4,7 @@
 '''
 
 from tkinter import *
+from tkinter import colorchooser
 
 class App(Frame):
     '''Base framed application class'''
@@ -56,11 +57,13 @@ class Paint(Canvas):
 
 class MyApp(App):
     def askcolor(self):
-        pass
+        self.Canvas.foreground = colorchooser.askcolor()[1]
 
     def create(self):
         self.Canvas = Paint(self, foreground="midnightblue")
         self.Canvas.grid(row=0, column=0, sticky=N+E+S+W)
+        self.AskColor = Button(self, text="Color", command=self.askcolor)
+        self.AskColor.grid(row=1, column=1, sticky=N+W)
         self.Quit = Button(self, text="Quit", command=self.quit)
         self.Quit.grid(row=0, column=1, sticky=N+W)
 
