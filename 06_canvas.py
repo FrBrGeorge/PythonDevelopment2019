@@ -72,4 +72,6 @@ class MyApp(App):
 
 app = MyApp(Title="Canvas Example")
 app.mainloop()
-print(app.Canvas.find_all())
+for item in app.Canvas.find_all():
+    print(*app.Canvas.coords(item), app.Canvas.itemcget(item, "fill"))
+
