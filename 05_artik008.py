@@ -18,10 +18,9 @@ root.columnconfigure(1, weight=1)
 def FaceSelect(*args):
     I["image"]=Images[L.selection_get()]
 
-Names = *filter(lambda x: x.endswith('.png'), os.listdir('.')), 
-
-with open('./artik008.txt') as f:
-    Names += tuple(f.read().splitlines())
+directory = '.' 
+files = os.listdir(directory) 
+Names = *filter(lambda x: x.endswith('.png'), files), 
 
 Images = {k:itk.PhotoImage(file=k) for k in Names}
 Name = StringVar(value=Names)
