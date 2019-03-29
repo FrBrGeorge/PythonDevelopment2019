@@ -32,8 +32,8 @@ TKroot = Tk()
 TKroot.title("Hello")
 
 root = Frame(TKroot)
-#root.pack(side="left")
-root.place(relx = 0, rely = 0)
+root.pack(side="left")
+#root.place(relx = 0, rely = 0)
 
 Add = Button(root, text = "Add")
 Add.bind('<Button-1>', add)
