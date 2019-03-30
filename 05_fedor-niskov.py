@@ -29,8 +29,11 @@ for n in Files:
         a = n0
         nt = n0 + ".txt"
         if nt in Files:
-            with open(nt) as f:
-                a = f.read().strip()
+            try:
+                with open(nt) as f:
+                    a = f.read().strip()
+            except UnicodeError:
+                print("WARNING: encoding problem: " + nt)
         else:
             print("WARNING: not found " + nt)
         if a in Alias.values():
