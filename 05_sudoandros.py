@@ -23,7 +23,15 @@ def get_image_name(image_path):
         with txt_path.open("r") as file:
             return file.read()
     else:
+        print("There is no txt file for {}".format(image_path.name))
         return image_path.stem
+
+def check_missing_images(dir_path):
+    for file_path in dir_path.iterdir():
+        if file_path.suffix == ".txt":
+            image_path = dir_path / (file_path.stem + ".png")
+            if not(image_path.is_file()):
+                print("There is no image for {}".format(file_path.name))
 
 Images = {}
 dir_path = Path(__file__).parent
@@ -31,6 +39,7 @@ for file_path in dir_path.iterdir():
     if file_path.suffix == ".png":
         image_name = get_image_name(file_path)
         Images[image_name] = PhotoImage(file=file_path.name)
+check_missing_images(dir_path)
 Name = StringVar(value=list(Images))
 
 L = Listbox(root, listvariable=Name)
