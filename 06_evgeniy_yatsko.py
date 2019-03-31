@@ -5,6 +5,7 @@
 
 from tkinter import *
 from tkinter import colorchooser
+from tkinter import filedialog
 
 class App(Frame):
     '''Base framed application class'''
@@ -69,6 +70,26 @@ class MyApp(App):
         self.Canvas.foreground.set(color)
         self.Canvas2.foreground.set(color)
         self.ShowColor.config(fg = color)
+
+    def clear(self):
+        self.Canvas.delete("all")
+        self.Canvas2.delete("all")
+
+    def write(self):
+        file = filedialog.asksaveasfilename()
+        with open(file, "w") as out_file:
+            for item in self.Canvas.find_all():
+                print(*self.Canvas.coords(item), self.Canvas.itemcget(item, "fill"), file = out_file)
+
+    def read(self):
+        file = filedialog.askopenfilename()
+        with open(file, "r") as in_file:
+            objects = in_file.read().splitlines()
+            for obj in objects:
+                info = obj.split()
+                self.Canvas.create_line((info[0], info[1], info[2], info[3]), fill = info[4])
+                self.Canvas2.create_line((info[0], info[1], info[2], info[3]), fill = info[4])
+
     def create(self):
         self.Canvas = Paint(self, foreground="midnightblue")
         self.Canvas.grid(row=0, column=0, rowspan=3, sticky=N+E+S+W)
@@ -90,6 +111,15 @@ class MyApp(App):
         
         self.Quit = Button(self.Frame, text="Quit", command=self.quit)
         self.Quit.grid(row=2, column=1, sticky=N+W)
+
+        self.Clear = Button(self.Frame, text = "Clear", command = self.clear)
+        self.Clear.grid(row = 3, column = 1, sticky = N+W)
+
+        self.Write = Button(self.Frame, text = "Write", command = self.write)
+        self.Write.grid(row = 4, column = 1, sticky = N+W)
+
+        self.Read = Button(self.Frame, text = "Read", command = self.read)
+        self.Read.grid(row = 5, column = 1, sticky = N+W)
 
 app = MyApp(Title="Canvas Example")
 app.mainloop()
