@@ -1,3 +1,2 @@
-midmedian
-notmidmedian
+not midmedian
 jesuschrist

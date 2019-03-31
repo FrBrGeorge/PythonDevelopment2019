@@ -15,12 +15,21 @@ root.columnconfigure(0, weight=0)
 root.columnconfigure(1, weight=1)
 
 def FaceSelect(*args):
-    I["image"]=Images[L.selection_get()]
+    I['image']=Images[L.selection_get()]
 
-Names = [k[0:-4] for k in os.listdir('.') if os.path.isfile(k) and k.endswith('.png')]
-Names.sort()
-Images = {k: PhotoImage(file = k + ".png") for k in Names}
-Name = StringVar(value=Names)
+Names = dict()
+for v in os.listdir('.'):
+    if os.path.isfile(v) and v.endswith('.png'):
+        v = v[0:-4]
+        k = v
+        t = v + '.txt'
+        if (t in os.listdir('.')) and os.path.isfile(t) and os.path.getsize(t) > 0:
+            f = open(t, 'r')
+            k = f.readline().strip()
+        Names[k] = v
+
+Images = {k: PhotoImage(file = Names.get(k) + '.png') for k in Names.keys()}
+Name = StringVar(value=sorted(list(Names.keys())))
 
 L = Listbox(root, listvariable=Name)
 L.grid(column=0, row=0, sticky=E+W+N)
