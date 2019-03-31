@@ -18,15 +18,30 @@ def FaceSelect(*args):
     I['image']=Images[L.selection_get()]
 
 Names = dict()
+wopng = []
+wotxt = []
 for v in os.listdir('.'):
-    if os.path.isfile(v) and v.endswith('.png'):
-        v = v[0:-4]
-        k = v
-        t = v + '.txt'
-        if (t in os.listdir('.')) and os.path.isfile(t) and os.path.getsize(t) > 0:
-            f = open(t, 'r')
-            k = f.readline().strip()
-        Names[k] = v
+    if os.path.isfile(v):
+        if v.endswith('.png'):
+            v = v[0:-4]
+            k = v
+            t = v + '.txt'
+            if (t in os.listdir('.')) and os.path.isfile(t) and os.path.getsize(t) > 0:
+                f = open(t, 'r')
+                k = f.readline().strip()
+            else:
+                wotxt.append(v + '.png')
+            Names[k] = v
+        elif v.endswith('.txt'):
+            v = v[0:-4]
+            t = v + '.png'
+            if  (t not in os.listdir('.')) or not os.path.isfile(t):
+                wopng.append(v + '.txt')
+
+wotxt.sort()
+wopng.sort()
+print('.png files without paired .txt:', *wotxt)
+print('.txt files without paired .png:', *wopng)
 
 Images = {k: PhotoImage(file = Names.get(k) + '.png') for k in Names.keys()}
 Name = StringVar(value=sorted(list(Names.keys())))
