@@ -53,6 +53,21 @@ class Paint(Canvas):
         self.anotherOne.cursor = None
         self.cursor = None
         #print(self.find_all())
+    
+    def thirddown(self, event):
+        self.x00, self.y00 = event.x, event.y
+        self.item = self.find_closest(event.x, event.y)[0]
+        self.itemS = self.anotherOne.find_closest(event.x, event.y)[0]
+
+    def thirdmove(self, event):
+        self.move(self.item, event.x - self.x00, event.y - self.y00)
+        self.anotherOne.move(self.itemS, event.x - self.x00, event.y - self.y00)
+        self.x00 = event.x
+        self.y00 = event.y
+
+    def thirdup(self, event):
+        return
+
 
     def __init__(self, master=None, *ap, foreground="black", **an):
         self.foreground = StringVar()
@@ -61,6 +76,10 @@ class Paint(Canvas):
         self.bind("<Button-1>", self.mousedown)
         self.bind("<B1-Motion>", self.mousemove)
         self.bind("<ButtonRelease-1>", self.mouseup)
+        self.bind("<Button-3>", self.thirddown)
+        self.bind("<B3-Motion>", self.thirdmove)
+        self.bind("<ButtonRelease-3>", self.thirdup)
+
 
         self.anotherOne = None
 
