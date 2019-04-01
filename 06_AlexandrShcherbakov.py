@@ -61,13 +61,14 @@ class ToolSet(Frame):
         self.canvas = canvas
         self.AskColor = Button(self, text="Color", command=self.askcolor)
         self.AskColor.grid(row=0, column=0, sticky=N+W)
-        self.ShowColor = Label(self, textvariable=self.canvas.foreground)
+        self.ShowColor = Label(self, textvariable=self.canvas.foreground, background=self.canvas.foreground.get())
         self.ShowColor.grid(row=1, column=0, sticky=N+W+E)
         self.Quit = Button(self, text="Quit", command=self.quit)
         self.Quit.grid(row=2, column=0, sticky=N+W)
 
     def askcolor(self):
         self.canvas.foreground.set(colorchooser.askcolor()[1])
+        self.ShowColor["background"] = self.canvas.foreground.get()
 
 class MyApp(App):
     def create(self):
