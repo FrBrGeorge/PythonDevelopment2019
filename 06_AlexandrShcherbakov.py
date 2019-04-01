@@ -65,8 +65,10 @@ class ToolSet(Frame):
         self.ShowColor.grid(row=1, column=0, sticky=N+W+E)
         self.Sync = Button(self, text="Syncronize canvases", command=self.syncronize_canvases)
         self.Sync.grid(row=2, column=0, sticky=N+W)
+        self.Cleaner = Button(self, text="Clear canvases", command=self.clear_canvases)
+        self.Cleaner.grid(row=3, column=0, sticky=N+W)
         self.Quit = Button(self, text="Quit", command=self.quit)
-        self.Quit.grid(row=3, column=0, sticky=N+W)
+        self.Quit.grid(row=4, column=0, sticky=N+W)
 
     def askcolor(self):
         color = colorchooser.askcolor()[1]
@@ -80,13 +82,15 @@ class ToolSet(Frame):
             for item in canvas.find_all():
                 lines.add((*canvas.coords(item), canvas.itemcget(item, "fill")))
 
-        for canvas in self.canvases:
-            for item in canvas.find_all():
-                canvas.delete(item)
+        self.clear_canvases()
 
         for canvas in self.canvases:
             for line in lines:
                 canvas.create_line(line[:4], fill=line[-1])
+
+    def clear_canvases(self):
+        for canvas in self.canvases:
+            canvas.delete("all")
 
 
 class MyApp(App):
