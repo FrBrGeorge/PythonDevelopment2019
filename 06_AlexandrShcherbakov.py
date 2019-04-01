@@ -4,7 +4,7 @@
 '''
 
 from tkinter import *
-from tkinter import colorchooser
+from tkinter import colorchooser, filedialog
 
 class App(Frame):
     '''Base framed application class'''
@@ -67,8 +67,12 @@ class ToolSet(Frame):
         self.Sync.grid(row=2, column=0, sticky=N+W)
         self.Cleaner = Button(self, text="Clear canvases", command=self.clear_canvases)
         self.Cleaner.grid(row=3, column=0, sticky=N+W)
+        self.Save = Button(self, text="Save", command=self.save_canvases)
+        self.Save.grid(row=4, column=0, sticky=N+W)
+        self.Load = Button(self, text="Load", command=self.load_canvases)
+        self.Load.grid(row=5, column=0, sticky=N+W)
         self.Quit = Button(self, text="Quit", command=self.quit)
-        self.Quit.grid(row=4, column=0, sticky=N+W)
+        self.Quit.grid(row=6, column=0, sticky=N+W)
 
     def askcolor(self):
         color = colorchooser.askcolor()[1]
@@ -91,6 +95,33 @@ class ToolSet(Frame):
     def clear_canvases(self):
         for canvas in self.canvases:
             canvas.delete("all")
+
+    def save_canvases(self):
+        filename = filedialog.asksaveasfilename()
+        if filename is None:
+            return
+
+        with open(filename, "w") as fout:
+            print(len(self.canvases), file=fout)
+            for canvas in self.canvases:
+                print(len(canvas.find_all()), file=fout)
+                for item in canvas.find_all():
+                    print(*canvas.coords(item), canvas.itemcget(item, "fill"), file=fout)
+
+    def load_canvases(self):
+        filename = filedialog.askopenfilename()
+        if filename is None:
+            return
+
+        self.clear_canvases()
+
+        with open(filename, "r") as fin:
+            canvases_in_file = int(next(fin))
+            for canvas in self.canvases:
+                lines_size = int(next(fin))
+                for i in range(lines_size):
+                    line = next(fin).split()
+                    canvas.create_line([float(x) for x in line[:4]], fill=line[-1])
 
 
 class MyApp(App):
