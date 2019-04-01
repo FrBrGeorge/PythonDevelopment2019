@@ -4,6 +4,8 @@
 '''
 
 from tkinter import *
+from os import listdir
+from os.path import isfile, join
 
 TKRoot = Tk()
 TKRoot.columnconfigure(0, weight=1)
@@ -16,9 +18,10 @@ root.columnconfigure(1, weight=1)
 def FaceSelect(*args):
     I["image"]=Images[L.selection_get()]
 
-Names = "FrBrGeorge", "FrBrGeorge_2"
-Images = {k:PhotoImage(file=k+".png") for k in Names}
+Names = [f for f in listdir("./") if isfile(join("./", f)) and f.endswith(".png")]
+Images = {k:PhotoImage(file=k) for k in Names}
 Name = StringVar(value=Names)
+
 
 L = Listbox(root, listvariable=Name)
 L.grid(column=0, row=0, sticky=E+W+N)
