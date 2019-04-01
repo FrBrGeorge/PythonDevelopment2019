@@ -47,6 +47,23 @@ class Paint(Canvas):
         '''Dragging is done'''
         self.cursor = None
 
+    def rightdown(self, event):
+        self.closest = self.find_closest(event.x, event.y)
+        if self.closest:
+            self.direction = self.coords(self.closest)[2] - self.coords(self.closest)[0], self.coords(self.closest)[3] - self.coords(self.closest)[1]
+            color = self.itemcget(self.closest, "fill")
+            self.delete(self.closest)
+            self.closest = self.create_line((event.x, event.y, self.direction[0] + event.x, self.direction[1] + event.y), fill=color)
+
+    def rightmove(self, event):
+        if self.closest:
+            color = self.itemcget(self.closest, "fill")
+            self.delete(self.closest)
+            self.closest = self.create_line((event.x, event.y, self.direction[0] + event.x, self.direction[1] + event.y), fill=color)
+
+    def rightup(self, event):
+        self.closest = None
+
     def __init__(self, master=None, *ap, foreground="black", **an):
         self.foreground = StringVar()
         self.foreground.set(foreground)
@@ -54,6 +71,10 @@ class Paint(Canvas):
         self.bind("<Button-1>", self.mousedown)
         self.bind("<B1-Motion>", self.mousemove)
         self.bind("<ButtonRelease-1>", self.mouseup)
+
+        self.bind("<Button-3>", self.rightdown)
+        self.bind("<B3-Motion>", self.rightmove)
+        self.bind("<ButtonRelease-3>", self.rightup)
 
 class ToolSet(Frame):
     def __init__(self, canvases=None):
