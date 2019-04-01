@@ -28,7 +28,7 @@ class App(Frame):
         for i in range(self.size()[0]):
             self.columnconfigure(i, weight=12)
         for i in range(self.size()[1]):
-            self.rowconfigure(i, weight=12)
+            self.rowconfigure(i, weight=1)
         
 class Paint(Canvas):
     '''Canvas with simple drawing'''
@@ -56,29 +56,50 @@ class Paint(Canvas):
         self.bind("<ButtonRelease-1>", self.mouseup)
 
 class ToolSet(Frame):
-    def __init__(self, canvas=None):
+    def __init__(self, canvases=None):
         Frame.__init__(self)
-        self.canvas = canvas
+        self.canvases = canvases
         self.AskColor = Button(self, text="Color", command=self.askcolor)
         self.AskColor.grid(row=0, column=0, sticky=N+W)
-        self.ShowColor = Label(self, textvariable=self.canvas.foreground, background=self.canvas.foreground.get())
+        self.ShowColor = Label(self, textvariable=self.canvases[0].foreground, background=self.canvases[0].foreground.get())
         self.ShowColor.grid(row=1, column=0, sticky=N+W+E)
+        self.Sync = Button(self, text="Syncronize canvases", command=self.syncronize_canvases)
+        self.Sync.grid(row=2, column=0, sticky=N+W)
         self.Quit = Button(self, text="Quit", command=self.quit)
-        self.Quit.grid(row=2, column=0, sticky=N+W)
+        self.Quit.grid(row=3, column=0, sticky=N+W)
 
     def askcolor(self):
-        self.canvas.foreground.set(colorchooser.askcolor()[1])
-        self.ShowColor["background"] = self.canvas.foreground.get()
+        color = colorchooser.askcolor()[1]
+        for canvas in self.canvases:
+            canvas.foreground.set(color)
+        self.ShowColor["background"] = color
+
+    def syncronize_canvases(self):
+        lines = set()
+        for canvas in self.canvases:
+            for item in canvas.find_all():
+                lines.add((*canvas.coords(item), canvas.itemcget(item, "fill")))
+
+        for canvas in self.canvases:
+            for item in canvas.find_all():
+                canvas.delete(item)
+
+        for canvas in self.canvases:
+            for line in lines:
+                canvas.create_line(line[:4], fill=line[-1])
+
 
 class MyApp(App):
     def create(self):
-        self.Canvas = Paint(self, foreground="midnightblue")
-        self.Canvas.grid(row=0, column=0, rowspan=3, sticky=N+E+S+W)
-        self.tools = ToolSet(self.Canvas)
-        self.tools.grid(row=0, column=1, sticky=N+W)
+        self.Canvases = [Paint(self, foreground="midnightblue") for i in range(2)]
+        for i, canvas in enumerate(self.Canvases):
+            canvas.grid(row=0, column=i, rowspan=3, sticky=N+E+S+W)
+        self.Canvases[1]["background"] = "black"
+        self.tools = ToolSet(self.Canvases)
+        self.tools.grid(row=0, column=len(self.Canvases), sticky=N+W)
 
 app = MyApp(Title="Canvas Example")
 app.mainloop()
-for item in app.Canvas.find_all():
-    print(*app.Canvas.coords(item), app.Canvas.itemcget(item, "fill"))
+for item in app.Canvases[0].find_all():
+    print(*app.Canvases[0].coords(item), app.Canvases[0].itemcget(item, "fill"))
 
