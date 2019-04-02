@@ -26,18 +26,43 @@ root.rowconfigure(1, weight=1)
 
 
 def FaceSelect(*args):
-	I["image"] = Images[L.selection_get()] 
+	print(L.selection_get())
+	print(Names_ident[L.selection_get()])
+	I["image"] = Images[Names_ident[L.selection_get()]]
 
+Names_png = []
+Names_txt = []
+for name_file in os.listdir():
+	if ".png" in name_file:
+	    Names_png.append(name_file)
+	elif ".txt" in name_file:
+		Names_txt.append(name_file)
 
-Names = "7", "cizlota_1", "6"
 Images = {}
-for k in Names : 
-	img = Image.open(k+".png")
+for k in Names_png : 
+	img = Image.open(k)
 	Images[k] = ImageTk.PhotoImage(img.resize((250, 250), Image.ANTIALIAS))
-Name = StringVar(value=Names)
 
-l = os.listdir()
-print(l)
+Names = {}
+Names_ident = {}
+for i in range(len(Names_png)):
+	png_file = Names_png[i].split('.', 1)[0]
+	for j in range(len(Names_txt)):
+		txt_file = Names_txt[j].split('.', 1)[0]
+		if png_file == txt_file:
+			with open(Names_txt[j], 'r',encoding='utf-8', errors='ignore') as file:
+				Names[i] = file.read()
+				Names_ident[Names[i]] = Names_png[i]
+				break
+		elif j == len(Names_txt)-1 :
+			print("No any txt files for", Names_png[i],". So name in Listbox will be unknown")
+			Names[i] = 'unknown'
+
+for name_file in os.listdir():
+	if '.txt' in name_file and not(name_file.replace(".txt", ".png") in os.listdir()):
+		print("No .png file for file:", name_file)
+
+Name = StringVar(value=Names)
 
 L = Listbox(root, listvariable=Name)
 L.grid( row=0, column=0, sticky=E+W+N+S, padx=10,pady=10)
@@ -52,10 +77,3 @@ Exit = Button(root, text="Quit!", command=root.quit)
 Exit.grid(row=1, column=0, columnspan=2, sticky=E+W+N+S, padx=10,pady=10)
 
 TKRoot.mainloop()
-
-
-
-# Модифицировать это дерево таким образом, чтобы:
-# - программа просматривал все .png-файлы в текущем каталоге, и из всех идентификаторов строила Listbox
-# - программа также просматривала файлы вида идентификатор.txt, в которых хранится предпочитаемое имя для Listbox, и из этих имён его и составляла
-# - (необязательно) программа должна сообщать о том, сто для каких-то .png нет соответствующих .txt и наоборот
