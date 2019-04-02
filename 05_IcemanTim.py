@@ -49,8 +49,9 @@ for i in range(len(Names_png)):
 		txt_file = Names_txt[j].split('.', 1)[0]
 		if png_file == txt_file:
 			with open(Names_txt[j], 'r',encoding='utf-8', errors='ignore') as file:
-				Names.append(file.read())
-				Names_ident[file.read()] = Names_png[i]
+				info = file.read()
+				Names.append(info)
+				Names_ident[info] = Names_png[i]
 				break
 		elif j == len(Names_txt)-1 :
 			print("No any txt files for", Names_png[i],". So name in Listbox will be unknown")
