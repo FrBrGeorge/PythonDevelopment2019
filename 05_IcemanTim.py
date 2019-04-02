@@ -26,7 +26,6 @@ root.rowconfigure(1, weight=1)
 
 
 def FaceSelect(*args):
-	print(Names_ident[L.selection_get()])
 	I["image"] = Images[Names_ident[L.selection_get()]]
 
 Names_png = []
@@ -55,8 +54,8 @@ for i in range(len(Names_png)):
 				break
 		elif j == len(Names_txt)-1 :
 			print("No any txt files for", Names_png[i],". So name in Listbox will be unknown")
-			Names.append(str(i)+"_unknown")
-			Names_ident[str(i)+"_unknown"] = Names_png[i]
+			Names.append(png_file+"_unknown")
+			Names_ident[png_file+"_unknown"] = Names_png[i]
 
 for name_file in os.listdir():
 	if '.txt' in name_file and not(name_file.replace(".txt", ".png") in os.listdir()):
