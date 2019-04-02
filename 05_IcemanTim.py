@@ -26,7 +26,6 @@ root.rowconfigure(1, weight=1)
 
 
 def FaceSelect(*args):
-	print(L.selection_get())
 	print(Names_ident[L.selection_get()])
 	I["image"] = Images[Names_ident[L.selection_get()]]
 
@@ -43,7 +42,7 @@ for k in Names_png :
 	img = Image.open(k)
 	Images[k] = ImageTk.PhotoImage(img.resize((250, 250), Image.ANTIALIAS))
 
-Names = {}
+Names = []
 Names_ident = {}
 for i in range(len(Names_png)):
 	png_file = Names_png[i].split('.', 1)[0]
@@ -51,12 +50,13 @@ for i in range(len(Names_png)):
 		txt_file = Names_txt[j].split('.', 1)[0]
 		if png_file == txt_file:
 			with open(Names_txt[j], 'r',encoding='utf-8', errors='ignore') as file:
-				Names[i] = file.read()
-				Names_ident[Names[i]] = Names_png[i]
+				Names.append(file.read())
+				Names_ident[file.read()] = Names_png[i]
 				break
 		elif j == len(Names_txt)-1 :
 			print("No any txt files for", Names_png[i],". So name in Listbox will be unknown")
-			Names[i] = 'unknown'
+			Names.append(str(i)+"_unknown")
+			Names_ident[str(i)+"_unknown"] = Names_png[i]
 
 for name_file in os.listdir():
 	if '.txt' in name_file and not(name_file.replace(".txt", ".png") in os.listdir()):
