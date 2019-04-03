@@ -5,6 +5,9 @@
 
 from tkinter import *
 from tkinter import colorchooser
+from tkinter.filedialog import askopenfilename
+from tkinter.filedialog import asksaveasfilename
+import os
 
 class App(Frame):
     '''Base framed application class'''
@@ -82,6 +85,26 @@ class MyApp(App):
     def Clean2(self):
         self.Canvas2.delete(ALL)
 
+    def Save(self):
+        filename = asksaveasfilename(filetypes = [("TXT files", "*.TXT")], defaultextension = ".TXT", initialfile = "cizlota.TXT", initialdir = os.getcwd())
+        if (filename != ''):
+            f = open(filename, 'w')
+            for item in self.Canvas1.find_all():
+                for coord in self.Canvas1.coords(item):
+                    f.write(f'{coord} ')
+                f.write(f'{app.Canvas1.itemcget(item, "fill")}\n')
+            f.close()
+
+    def Load(self):
+        filename = askopenfilename(filetypes = [("TXT files", "*.TXT")], initialdir = os.getcwd())
+        if (filename != ''):
+            self.Canvas1.delete(ALL)
+            f = open(filename, 'r')
+            for line in f:
+                c = line.split()
+                self.Canvas1.create_line([float(c[0]), float(c[1]), float(c[2]), float(c[3])], fill = c[4])
+            f.close()
+
     def create(self):
         self.columnconfigure(0, weight = 10)
         self.columnconfigure(1, minsize = 166)
@@ -108,12 +131,15 @@ class MyApp(App):
         self.Frame.Clean_1.grid(row=2, column=0, sticky=N+W)
         self.Frame.Clean_2 = Button(self.Frame, text = "Clean", command=self.Clean2, width = 10)
         self.Frame.Clean_2.grid(row=2, column=1, sticky=N+E)
+        self.Frame.Save1 = Button(self.Frame, text = "Save", command=self.Save, width = 10)
+        self.Frame.Save1.grid(row=3, column=0, sticky=N+W)
+        self.Frame.Load1 = Button(self.Frame, text = "Load", command=self.Load, width = 10)
+        self.Frame.Load1.grid(row=4, column=0, sticky=N+W)
         self.Frame.Quit = Button(self.Frame, text="Quit", command=self.quit, width = 21)
         self.Frame.Quit.grid(row=6, column=0, columnspan = 2, sticky=S)
         
 
 app = MyApp(Title="Canvas Example")
 app.mainloop()
-for item in app.Canvas1.find_all():
-    print(app.Canvas1.coords(item), app.Canvas1.itemcget(item, "fill"))
+    
 
