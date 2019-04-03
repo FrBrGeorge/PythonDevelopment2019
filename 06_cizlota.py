@@ -35,29 +35,46 @@ class App(Frame):
         
 class Paint(Canvas):
     '''Canvas with simple drawing'''
-    def mousedown(self, event):
+    def mousedown1(self, event):
         '''Store mousedown coords'''
         self.x0, self.y0 = event.x, event.y
         self.cursor = None
 
-    def mousemove(self, event):
+    def mousemove1(self, event):
         '''Do sometheing when drag a mouse'''
         if self.cursor:
             self.delete(self.cursor)
         self.cursor = self.create_line((self.x0, self.y0, event.x, event.y), fill=self.foreground.get())
-
-    def mouseup(self, event):
+     
+    def mouseup1(self, event):
         '''Dragging is done'''
         self.cursor = None
-        #print(self.find_all())
+
+    def mousedown3(self, event):
+        self.mov = self.find_closest(event.x, event.y, halo = 15)
+        if self.mov:
+            self.cds = self.coords(self.mov)
+            self.x3, self.y3 = event.x, event.y
+
+    def mousemove3(self, event):
+        if self.mov:
+            self.coords(self.mov, (self.cds[0] - (self.x3 - event.x)), (self.cds[1] - (self.y3 - event.y)), (self.cds[2] - (self.x3 - event.x)), (self.cds[3] - (self.y3 - event.y)))
+            
+    def mouseup3(self, event):
+        self.mov = None
+        
 
     def __init__(self, master=None, *ap, foreground="black", **an):
         self.foreground = StringVar()
         self.foreground.set(foreground)
         Canvas.__init__(self, master, *ap, **an)
-        self.bind("<Button-1>", self.mousedown)
-        self.bind("<B1-Motion>", self.mousemove)
-        self.bind("<ButtonRelease-1>", self.mouseup)
+        self.bind("<Button-1>", self.mousedown1)
+        self.bind("<B1-Motion>", self.mousemove1)
+        self.bind("<ButtonRelease-1>", self.mouseup1)
+        self.bind("<Button-3>", self.mousedown3)
+        self.bind("<B3-Motion>", self.mousemove3)
+        self.bind("<ButtonRelease-3>", self.mouseup3)
+        
 
 class MyApp(App):
     def askcolor1(self):
@@ -70,7 +87,6 @@ class MyApp(App):
         ret = colorchooser.askcolor()[1]
         if (ret != None):
             self.Canvas2.foreground.set(ret)
-            print(self.Canvas2.foreground.get())
             self.Frame.ShowColor2.configure(bg = self.Canvas2.foreground.get())
 
     def Copy1to2(self):
