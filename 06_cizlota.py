@@ -77,6 +77,11 @@ class MyApp(App):
         for item in self.Canvas2.find_all():
             self.Canvas1.create_line(self.Canvas2.coords(item),fill = app.Canvas2.itemcget(item, "fill"))
 
+    def Clean1(self):
+        self.Canvas1.delete(ALL)
+    def Clean2(self):
+        self.Canvas2.delete(ALL)
+
     def create(self):
         self.columnconfigure(0, weight = 10)
         self.columnconfigure(1, minsize = 166)
@@ -96,10 +101,14 @@ class MyApp(App):
         self.Frame.ShowColor2 = Button(self.Frame, textvariable=self.Canvas2.foreground, command=self.askcolor2, width = 10, bg = self.Canvas2.foreground.get())
         self.Frame.ShowColor2.grid(row=0, column=1, sticky=N+E)
         self.Frame.Copy2t1 = Button(self.Frame, text = "<-", command=self.Copy2to1, width = 10)
-        self.Frame.Copy2t1.grid(row=1, column=0, sticky=N+E)
+        self.Frame.Copy2t1.grid(row=1, column=0, sticky=N+W)
         self.Frame.Copy1t2 = Button(self.Frame, text = "->", command=self.Copy1to2, width = 10)
-        self.Frame.Copy1t2.grid(row=1, column=1, sticky=N+W)
-        self.Frame.Quit = Button(self.Frame, text="Quit", command=self.quit, width = 20)
+        self.Frame.Copy1t2.grid(row=1, column=1, sticky=N+E)
+        self.Frame.Clean_1 = Button(self.Frame, text = "Clean", command=self.Clean1, width = 10)
+        self.Frame.Clean_1.grid(row=2, column=0, sticky=N+W)
+        self.Frame.Clean_2 = Button(self.Frame, text = "Clean", command=self.Clean2, width = 10)
+        self.Frame.Clean_2.grid(row=2, column=1, sticky=N+E)
+        self.Frame.Quit = Button(self.Frame, text="Quit", command=self.quit, width = 21)
         self.Frame.Quit.grid(row=6, column=0, columnspan = 2, sticky=S)
         
 
