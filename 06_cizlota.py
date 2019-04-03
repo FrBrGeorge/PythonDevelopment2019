@@ -61,7 +61,6 @@ class MyApp(App):
         ret = colorchooser.askcolor()[1]
         if (ret != None):
             self.Canvas1.foreground.set(ret)
-            print(self.Canvas1.foreground.get())
             self.Frame.ShowColor1.configure(bg = self.Canvas1.foreground.get())
     
     def askcolor2(self):
@@ -71,12 +70,20 @@ class MyApp(App):
             print(self.Canvas2.foreground.get())
             self.Frame.ShowColor2.configure(bg = self.Canvas2.foreground.get())
 
+    def Copy1to2(self):
+        for item in self.Canvas1.find_all():
+            self.Canvas2.create_line(self.Canvas1.coords(item),fill = app.Canvas1.itemcget(item, "fill"))
+    def Copy2to1(self):
+        for item in self.Canvas2.find_all():
+            self.Canvas1.create_line(self.Canvas2.coords(item),fill = app.Canvas2.itemcget(item, "fill"))
+
     def create(self):
-        self.columnconfigure(0, weight = 1)
-        self.columnconfigure(1, minsize = 60)
-        self.columnconfigure(2, weight = 1)
+        self.columnconfigure(0, weight = 10)
+        self.columnconfigure(1, minsize = 166)
+        self.columnconfigure(1, weight = 0)
+        self.columnconfigure(2, weight = 10)
         self.rowconfigure(0, weight = 1)
-        self.rowconfigure(1, weight = 1)
+        #self.rowconfigure(1, weight = 1)
         self.Canvas1 = Paint(self, foreground="Green")
         self.Canvas1.grid(row=0, column=0, sticky=N+E+S+W)
         self.Canvas2 = Paint(self, foreground="Red")
@@ -87,13 +94,17 @@ class MyApp(App):
         self.Frame.ShowColor1 = Button(self.Frame, textvariable=self.Canvas1.foreground, command=self.askcolor1, width = 10, bg = self.Canvas1.foreground.get())
         self.Frame.ShowColor1.grid(row=0, column=0, sticky=N+W)
         self.Frame.ShowColor2 = Button(self.Frame, textvariable=self.Canvas2.foreground, command=self.askcolor2, width = 10, bg = self.Canvas2.foreground.get())
-        self.Frame.ShowColor2.grid(row=0, column=1, sticky=N+W)
-        self.Frame.Quit = Button(self.Frame, text="Quit", command=self.quit, width = 10)
-        self.Frame.Quit.grid(row=6, column=0, columnspan = 2, sticky=S+W)
+        self.Frame.ShowColor2.grid(row=0, column=1, sticky=N+E)
+        self.Frame.Copy2t1 = Button(self.Frame, text = "<-", command=self.Copy2to1, width = 10)
+        self.Frame.Copy2t1.grid(row=1, column=0, sticky=N+E)
+        self.Frame.Copy1t2 = Button(self.Frame, text = "->", command=self.Copy1to2, width = 10)
+        self.Frame.Copy1t2.grid(row=1, column=1, sticky=N+W)
+        self.Frame.Quit = Button(self.Frame, text="Quit", command=self.quit, width = 20)
+        self.Frame.Quit.grid(row=6, column=0, columnspan = 2, sticky=S)
         
 
 app = MyApp(Title="Canvas Example")
 app.mainloop()
-#for item in app.Canvas.find_all():
-#    print(*app.Canvas.coords(item), app.Canvas.itemcget(item, "fill"))
+for item in app.Canvas1.find_all():
+    print(app.Canvas1.coords(item), app.Canvas1.itemcget(item, "fill"))
 
