@@ -58,7 +58,9 @@ class Paint(Canvas):
 
 class MyApp(App):
     def askcolor(self):
-        self.Canvas.foreground.set(colorchooser.askcolor()[1])
+        color = colorchooser.askcolor()
+        self.Canvas.foreground.set(color[1])
+        self.ControlPanel.ShowColor.configure(bg=color[1])
 
     def create(self):
         self.Canvas = Paint(self, foreground="midnightblue")
