@@ -60,6 +60,7 @@ class MyApp(App):
     def askcolor(self):
         color = colorchooser.askcolor()
         self.Canvas.foreground.set(color[1])
+        self.Canvas2.foreground.set(color[1])
         self.ControlPanel.ShowColor.configure(bg=color[1])
 
     def create(self):
@@ -73,11 +74,14 @@ class MyApp(App):
         self.ControlPanel.ShowColor.grid(row=1, column=0, sticky=W+E)
         self.ControlPanel.Quit = Button(self.ControlPanel, text="Quit", command=self.quit)
         self.ControlPanel.Quit.grid(row=2, column=0, sticky=W+E)
+        self.Canvas2 = Paint(self, foreground="midnightblue")
+        self.Canvas2.grid(row=0, column=2, sticky=N+E+S+W)
 
     def adjust(self):
         self.rowconfigure(0, weight=1)
         self.columnconfigure(0, weight=1)
         self.columnconfigure(1, weight=0)
+        self.columnconfigure(2, weight=1)
         for i in range(self.ControlPanel.size()[1]):
             self.ControlPanel.rowconfigure(i, weight=0)
         self.ControlPanel.columnconfigure(0, weight=1)
