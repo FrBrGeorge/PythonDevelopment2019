@@ -70,6 +70,10 @@ class MyApp(App):
                 fill=CanvasSrc.itemcget(i, "fill")
             )
 
+    def clear(self, canvas):
+        for i in canvas.find_all():
+            canvas.delete(i)
+
     def create(self):
 
         init_color = "midnightblue"
@@ -97,6 +101,14 @@ class MyApp(App):
         self.ControlPanel.CopyR = Button(self.ControlPanel, text=">",
           command = lambda : self.copy(self.Canvas2, self.Canvas))
         self.ControlPanel.CopyR.grid(row=4, column=0, sticky=W+E)
+
+        self.ControlPanel.Clear = Button(self.ControlPanel, text="Clear Left",
+          command = lambda : self.clear(self.Canvas))
+        self.ControlPanel.Clear.grid(row=5, column=0, sticky=W+E)
+
+        self.ControlPanel.Clear2 = Button(self.ControlPanel, text="Clear Right",
+          command = lambda : self.clear(self.Canvas2))
+        self.ControlPanel.Clear2.grid(row=6, column=0, sticky=W+E)
 
         self.Canvas2 = Paint(self, foreground=init_color)
         self.Canvas2.grid(row=0, column=2, sticky=N+E+S+W)
