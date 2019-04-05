@@ -5,6 +5,7 @@
 
 from tkinter import *
 from tkinter import colorchooser
+from tkinter import filedialog
 
 class App(Frame):
     '''Base framed application class'''
@@ -74,6 +75,36 @@ class MyApp(App):
         for i in canvas.find_all():
             canvas.delete(i)
 
+    def save(self):
+        filename = filedialog.asksaveasfilename(
+            initialdir = "/",
+            title = "Select file",
+            filetypes = (("text file", "*.txt"),)
+        )
+        if not filename:
+            return
+        with open(filename, "w") as f:
+            cs = self.Canvas
+            for i in cs.find_all():
+                for c in cs.coords(i):
+                    f.write(str(c) + " ")
+                f.write(cs.itemcget(i, "fill") + "\n")
+
+    def load(self):
+        filename = filedialog.askopenfilename(
+            initialdir = "/",
+            title = "Select file",
+            filetypes = (("text file", "*.txt"),)
+        )
+        if not filename:
+            return
+        with open(filename, "r") as f:
+            for l in f.readlines():
+                l = l.split()
+                coords = tuple(float(c) for c in l[:4])
+                color = l[4]
+                self.Canvas.create_line(coords, fill=color)
+
     def create(self):
 
         init_color = "midnightblue"
@@ -95,20 +126,26 @@ class MyApp(App):
         self.ControlPanel.Quit.grid(row=2, column=0, sticky=W+E)
 
         self.ControlPanel.CopyL = Button(self.ControlPanel, text="<",
-          command = lambda : self.copy(self.Canvas, self.Canvas2))
+            command = lambda : self.copy(self.Canvas, self.Canvas2))
         self.ControlPanel.CopyL.grid(row=3, column=0, sticky=W+E)
 
         self.ControlPanel.CopyR = Button(self.ControlPanel, text=">",
-          command = lambda : self.copy(self.Canvas2, self.Canvas))
+            command = lambda : self.copy(self.Canvas2, self.Canvas))
         self.ControlPanel.CopyR.grid(row=4, column=0, sticky=W+E)
 
         self.ControlPanel.Clear = Button(self.ControlPanel, text="Clear Left",
-          command = lambda : self.clear(self.Canvas))
+            command = lambda : self.clear(self.Canvas))
         self.ControlPanel.Clear.grid(row=5, column=0, sticky=W+E)
 
         self.ControlPanel.Clear2 = Button(self.ControlPanel, text="Clear Right",
-          command = lambda : self.clear(self.Canvas2))
+            command = lambda : self.clear(self.Canvas2))
         self.ControlPanel.Clear2.grid(row=6, column=0, sticky=W+E)
+
+        self.ControlPanel.Quit = Button(self.ControlPanel, text="Save...", command=self.save)
+        self.ControlPanel.Quit.grid(row=7, column=0, sticky=W+E)
+
+        self.ControlPanel.Quit = Button(self.ControlPanel, text="Load...", command=self.load)
+        self.ControlPanel.Quit.grid(row=8, column=0, sticky=W+E)
 
         self.Canvas2 = Paint(self, foreground=init_color)
         self.Canvas2.grid(row=0, column=2, sticky=N+E+S+W)
