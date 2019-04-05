@@ -62,13 +62,24 @@ class MyApp(App):
 
     def create(self):
         self.Canvas = Paint(self, foreground="midnightblue")
-        self.Canvas.grid(row=0, column=0, rowspan=3, sticky=N+E+S+W)
-        self.AskColor = Button(self, text="Color", command=self.askcolor)
-        self.AskColor.grid(row=0, column=1, sticky=N+W)
-        self.ShowColor = Label(self, textvariable=self.Canvas.foreground)
-        self.ShowColor.grid(row=1, column=1, sticky=N+W+E)
-        self.Quit = Button(self, text="Quit", command=self.quit)
-        self.Quit.grid(row=2, column=1, sticky=N+W)
+        self.Canvas.grid(row=0, column=0, sticky=N+E+S+W)
+        self.ControlPanel = Frame(self)
+        self.ControlPanel.grid(row=0, column=1, sticky=N+E+S+W)
+        self.ControlPanel.AskColor = Button(self.ControlPanel, text="Color", command=self.askcolor)
+        self.ControlPanel.AskColor.grid(row=0, column=0, sticky=W+E)
+        self.ControlPanel.ShowColor = Label(self.ControlPanel, textvariable=self.Canvas.foreground)
+        self.ControlPanel.ShowColor.grid(row=1, column=0, sticky=W+E)
+        self.ControlPanel.Quit = Button(self.ControlPanel, text="Quit", command=self.quit)
+        self.ControlPanel.Quit.grid(row=2, column=0, sticky=W+E)
+
+    def adjust(self):
+        self.rowconfigure(0, weight=1)
+        self.columnconfigure(0, weight=1)
+        self.columnconfigure(1, weight=0)
+        for i in range(self.ControlPanel.size()[1]):
+            self.ControlPanel.rowconfigure(i, weight=0)
+        self.ControlPanel.columnconfigure(0, weight=1)
+
 
 app = MyApp(Title="Canvas Example")
 app.mainloop()
