@@ -63,17 +63,38 @@ class MyApp(App):
         self.Canvas2.foreground.set(color[1])
         self.ControlPanel.ShowColor.configure(bg=color[1])
 
+    def copy(self, CanvasDst, CanvasSrc):
+        for i in CanvasSrc.find_all():
+            CanvasDst.create_line(
+                CanvasSrc.coords(i),
+                fill=CanvasSrc.itemcget(i, "fill")
+            )
+
     def create(self):
+
         self.Canvas = Paint(self, foreground="midnightblue")
         self.Canvas.grid(row=0, column=0, sticky=N+E+S+W)
+
         self.ControlPanel = Frame(self)
         self.ControlPanel.grid(row=0, column=1, sticky=N+E+S+W)
+
         self.ControlPanel.AskColor = Button(self.ControlPanel, text="Color", command=self.askcolor)
         self.ControlPanel.AskColor.grid(row=0, column=0, sticky=W+E)
+
         self.ControlPanel.ShowColor = Label(self.ControlPanel, textvariable=self.Canvas.foreground)
         self.ControlPanel.ShowColor.grid(row=1, column=0, sticky=W+E)
+
         self.ControlPanel.Quit = Button(self.ControlPanel, text="Quit", command=self.quit)
         self.ControlPanel.Quit.grid(row=2, column=0, sticky=W+E)
+
+        self.ControlPanel.CopyL = Button(self.ControlPanel, text="<",
+          command = lambda : self.copy(self.Canvas, self.Canvas2))
+        self.ControlPanel.CopyL.grid(row=3, column=0, sticky=W+E)
+
+        self.ControlPanel.CopyR = Button(self.ControlPanel, text=">",
+          command = lambda : self.copy(self.Canvas2, self.Canvas))
+        self.ControlPanel.CopyR.grid(row=4, column=0, sticky=W+E)
+
         self.Canvas2 = Paint(self, foreground="midnightblue")
         self.Canvas2.grid(row=0, column=2, sticky=N+E+S+W)
 
