@@ -49,13 +49,24 @@ class Paint(Canvas):
         self.cursor = None
         #print(self.find_all())
 
+    def mouseselect(self, event):
+        if self.selected != None:
+            self.itemconfig(self.selected, dash=())
+            self.selected = None
+        else:
+            line = self.find_closest(event.x, event.y)
+            self.itemconfig(line, dash=(4,4))
+            self.selected = line
+
     def __init__(self, master=None, *ap, foreground="black", **an):
         self.foreground = StringVar()
         self.foreground.set(foreground)
+        self.selected = None
         Canvas.__init__(self, master, *ap, **an)
         self.bind("<Button-1>", self.mousedown)
         self.bind("<B1-Motion>", self.mousemove)
         self.bind("<ButtonRelease-1>", self.mouseup)
+        self.bind("<Button-3>", self.mouseselect)
 
 class MyApp(App):
     def askcolor(self):
@@ -65,7 +76,14 @@ class MyApp(App):
         self.ControlPanel.ShowColor.configure(bg=color[1])
 
     def copy(self, CanvasDst, CanvasSrc):
-        for i in CanvasSrc.find_all():
+        s = CanvasSrc.selected
+        if s == None:
+            lines = CanvasSrc.find_all()
+        else:
+            lines = [s]
+            CanvasSrc.itemconfig(s, dash=())
+            CanvasSrc.selected = None
+        for i in lines:
             CanvasDst.create_line(
                 CanvasSrc.coords(i),
                 fill=CanvasSrc.itemcget(i, "fill")
