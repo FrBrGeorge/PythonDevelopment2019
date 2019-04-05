@@ -72,7 +72,9 @@ class MyApp(App):
 
     def create(self):
 
-        self.Canvas = Paint(self, foreground="midnightblue")
+        init_color = "midnightblue"
+
+        self.Canvas = Paint(self, foreground=init_color)
         self.Canvas.grid(row=0, column=0, sticky=N+E+S+W)
 
         self.ControlPanel = Frame(self)
@@ -83,6 +85,7 @@ class MyApp(App):
 
         self.ControlPanel.ShowColor = Label(self.ControlPanel, textvariable=self.Canvas.foreground)
         self.ControlPanel.ShowColor.grid(row=1, column=0, sticky=W+E)
+        self.ControlPanel.ShowColor.configure(bg=init_color)
 
         self.ControlPanel.Quit = Button(self.ControlPanel, text="Quit", command=self.quit)
         self.ControlPanel.Quit.grid(row=2, column=0, sticky=W+E)
@@ -95,7 +98,7 @@ class MyApp(App):
           command = lambda : self.copy(self.Canvas2, self.Canvas))
         self.ControlPanel.CopyR.grid(row=4, column=0, sticky=W+E)
 
-        self.Canvas2 = Paint(self, foreground="midnightblue")
+        self.Canvas2 = Paint(self, foreground=init_color)
         self.Canvas2.grid(row=0, column=2, sticky=N+E+S+W)
 
     def adjust(self):
