@@ -2,8 +2,10 @@
 '''
 Домашнее задание по 05_WidgetsAndCollaborative
 '''
-import os
+
 from tkinter import *
+import glob
+import os
 
 TKRoot = Tk()
 TKRoot.columnconfigure(0, weight=1)
@@ -14,44 +16,41 @@ root.columnconfigure(0, weight=0)
 root.columnconfigure(1, weight=1)
 
 def FaceSelect(*args):
-    I["image"]=Images[L.selection_get()]
-
-
+    #print("L.selection_get = ",L.get(L.curselection()))
+    I["image"]=Images[text_picture[L.selection_get()]]
 
 ListNames = []
 rootdir = os.getcwd()
 for subdir, dirs, files in os.walk(rootdir):
     for file in files:
-        #print os.path.join(subdir, file)
-        filepath = subdir + os.sep + file
         
-        base = (os.path.splitext(os.path.basename(file))[0])
         if file.endswith(".png"):
-            #print (base)
-            ListNames.append(base)
+           ListNames.append(file)
 
 
-for file in ListNames:
-      txt_file = file + ".txt"
-      if txt_file in os.listdir(): 
-          with open(txt_file, 'r') as file2:
-            for line in file2:
-                #line = line.strip("\n")
-                print(line)
-                ListNames.append(line)
 
-      else:
-          print("there is no file ",txt_file)
-
-ListNames = [x.strip() for x in ListNames]
-
-Names = tuple(ListNames)
+Names = list(name[0:len(name)-4] for name in ListNames)
+Picture_names = Names.copy()
 Images = {k:PhotoImage(file=k+".png") for k in Names}
+
+PictureTxt = Names
+
+for i in range(len(ListNames)):
+    txt = ListNames[i].replace(".png", ".txt")
+    if txt in os.listdir():
+        file = open(txt, 'r')
+        file_context = file.read()
+        PictureTxt[i] = file_context.rstrip()
+        file.close()
+    else:
+        print("There is no text for ", PictureTxt[i])
+
+text_picture = {}
+for text, picture_name in zip(Names, Picture_names):
+    text_picture[text] = picture_name
+
+
 Name = StringVar(value=Names)
-
-
-
-
 L = Listbox(root, listvariable=Name)
 L.grid(column=0, row=0, sticky=E+W+N)
 L.bind('<<ListboxSelect>>', FaceSelect)
