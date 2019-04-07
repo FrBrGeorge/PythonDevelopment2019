@@ -60,9 +60,11 @@ class Paint(Canvas):
 
 class ButFrame(Frame):
     def askcolor(self):
-        self.Canvas.foreground.set(colorchooser.askcolor()[1]) 
-        self.Canvas1.foreground.set(self.Canvas.foreground.get())  
-        self.ShowColor['bg'] = self.Canvas.foreground.get()
+        col = colorchooser.askcolor()[1]
+        if col:
+            self.Canvas.foreground.set(col) 
+            self.Canvas1.foreground.set(self.Canvas.foreground.get())  
+            self.ShowColor['bg'] = self.Canvas.foreground.get()
 
     def adjust(self):
         '''Adjust grid sise/properties'''
@@ -88,6 +90,39 @@ class ButFrame(Frame):
         for i in self.Canvas1.find_all():
             self.Canvas1.delete(i)
 
+
+    def save(self):
+        def strr(l):
+            s = ''
+            for i in l:
+                s += str(i) + ' '
+            return s
+
+        f = filedialog.asksaveasfilename()
+        if f:
+            file = open(f,'w')
+            for i in self.Canvas.find_all():
+                file.write(strr(self.Canvas.coords(i)) + " " + str(self.Canvas.itemcget(i, "fill")) + ' 0' + '\n')
+            for i in self.Canvas1.find_all():
+                file.write(strr(self.Canvas1.coords(i)) + " " + str(self.Canvas1.itemcget(i, "fill")) + ' 1' + '\n')
+            file.close()
+
+    def load(self):
+        f = filedialog.askopenfilename()
+        if f:
+            self.clear()
+            file = open(f,'r')
+
+            for i in file:
+                i = i.split()
+                if i[-1] == '0':
+                    self.Canvas.create_line(i[:4], fill=i[4])
+                if i[-1] == '1':
+                    self.Canvas1.create_line(i[:4], fill=i[4])
+
+            file.close()
+
+
     def __init__(self, canvas=None, canvas1=None, master=None, Title="Application"):
         Frame.__init__(self)
         self.Canvas=canvas
@@ -105,8 +140,14 @@ class ButFrame(Frame):
         self.Clear = Button(self, text='Clear', command=self.clear)
         self.Clear.grid(row=3, column=1, sticky=N)
 
+        self.Save = Button(self, text='Save', command=self.save)
+        self.Save.grid(row=4, column=1, sticky=N)
+
+        self.Load = Button(self, text='Load', command=self.load)
+        self.Load.grid(row=5, column=1, sticky=N)
+
         self.Quit = Button(self, text="Quit", command=self.quit)
-        self.Quit.grid(row=4, column=1, sticky=N)
+        self.Quit.grid(row=6, column=1, sticky=N)
         self.adjust()
      
 class MyApp(App):
