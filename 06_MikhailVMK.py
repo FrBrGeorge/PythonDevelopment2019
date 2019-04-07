@@ -2,6 +2,8 @@
 '''
 Пример объектной организации кода
 '''
+from collections import namedtuple
+PanelCoords = namedtuple("PanelCoords", ["row", "column", "rowspan", "columnspan"])
 
 from tkinter import *
 from tkinter import colorchooser
@@ -58,11 +60,26 @@ class CanvasPanel(Canvas):
 
 class WorkSpace(App):
     def _create(self):
+        self._canvasPanelCoords = PanelCoords(row=0, column=0, rowspan = 3, columnspan = 1)
         self._canvasPanel = CanvasPanel(self, foreground="midnightblue")
-        self._canvasPanel.grid(row=0, column=0, rowspan=3, sticky=N+E+S+W)        
+        self._canvasPanel.grid(row=self._canvasPanelCoords.row,
+                            column=self._canvasPanelCoords.column,
+                            rowspan=self._canvasPanelCoords.rowspan,
+                            columnspan=self._canvasPanelCoords.columnspan,
+                            sticky=N+E+S+W)        
+        self._canvasToolsCoords = PanelCoords(row=0, column=1, rowspan = 3, columnspan = 1) 
         self._canvasTools = CanvasToolPanel(self, self._canvasPanel)
-        self._canvasTools.grid(row=0, column=1, rowspan=3, sticky=N+E+S+W)
-    
+        self._canvasTools.grid(row=self._canvasToolsCoords.row,
+                            column=self._canvasToolsCoords.column,
+                            rowspan=self._canvasToolsCoords.rowspan,
+                            columnspan=self._canvasToolsCoords.columnspan,
+                            sticky=N+E+S+W)        
+    def _adjust(self):
+        self.rowconfigure(0, weight=12)
+        self.columnconfigure(0, weight=12)
+        self.columnconfigure(1, weight=0)
+
+
     def printCanvasObjects(self):
         for item in self._canvasPanel.find_all():
             print(*self._canvasPanel.coords(item), self._canvasPanel.itemcget(item, "fill"))
@@ -70,6 +87,8 @@ class WorkSpace(App):
 class CanvasToolPanel(Frame):
     def __init__(self, root, canvasPanel):
         Frame.__init__(self, root)
+        self['borderwidth'] = 2
+        self['relief'] = 'raised'
         self._canvasPanel = canvasPanel
         self._askColor = Button(self, text="Color", command=self._askcolor)
         self._askColor.grid(row=0, column=0, sticky=N+W)
