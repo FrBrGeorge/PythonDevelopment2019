@@ -66,6 +66,14 @@ class MyApp(App):
     def askcolorRight(self):
         self.CanvasTwo.foreground.set(colorchooser.askcolor()[1])
 
+    def cpLtoR(self):
+        for item in self.Canvas.find_all():
+            self.CanvasTwo.create_line(self.Canvas.coords(item),fill = app.Canvas.itemcget(item, "fill"))
+
+    def cpRtoL(self):
+        for item in self.CanvasTwo.find_all():
+            self.Canvas.create_line(self.CanvasTwo.coords(item),fill = app.CanvasTwo.itemcget(item, "fill"))
+
     def create(self):
         self.Canvas = Paint(self, foreground="midnightblue")
         self.Canvas.grid(row=0, column=0, sticky=N+E+S+W)
@@ -78,9 +86,9 @@ class MyApp(App):
         self.Frame.AskColor.grid(row=0, column=0, sticky=N+W)
         self.Frame.AskColorTwo = Button(self.Frame, text="Right color", command=self.askcolorRight)
         self.Frame.AskColorTwo.grid(row=0, column=1, sticky=N+E)
-        self.Frame.CopyLeft = Button(self.Frame, text="Copy to the right")
+        self.Frame.CopyLeft = Button(self.Frame, text="Copy to the right", command=self.cpLtoR)
         self.Frame.CopyLeft.grid(row=1, column=0, sticky=N+W)
-        self.Frame.CopyRight = Button(self.Frame, text="Copy to the left")
+        self.Frame.CopyRight = Button(self.Frame, text="Copy to the left", command=self.cpRtoL)
         self.Frame.CopyRight.grid(row=1, column=1, sticky=N+W)
         self.Frame.CleanLeft = Button(self.Frame, text="Clean left")
         self.Frame.CleanLeft.grid(row=2, column=0, sticky=N+W)
@@ -95,6 +103,3 @@ class MyApp(App):
 
 app = MyApp(Title="Canvas Example")
 app.mainloop()
-for item in app.Canvas.find_all():
-    print(*app.Canvas.coords(item), app.Canvas.itemcget(item, "fill"))
-
