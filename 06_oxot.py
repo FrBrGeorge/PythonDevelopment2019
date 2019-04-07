@@ -47,7 +47,25 @@ class Paint(Canvas):
     def mouseup(self, event):
         '''Dragging is done'''
         self.cursor = None
-        #print(self.find_all())
+
+    def mouse3down(self, event):
+        '''Store mousedown coords'''
+        self.x1, self.y1 = event.x, event.y
+        self.cursor = self.find_closest(event.x, event.y)
+        self.x01, self.y01, self.x02, self.y02 = self.coords(self.cursor)
+        self.col = self.itemcget(self.cursor, 'fill')
+
+    def mouse3move(self, event):
+        '''Do sometheing when drag a mouse'''
+        if self.cursor:
+            self.delete(self.cursor)
+        
+        self.cursor = self.create_line((self.x01 + event.x - self.x1, self.y01 + event.y - self.y1
+            ,self.x02 + event.x-self.x1,self.y02 + event.y-self.y1), fill=self.col)
+
+    def mouse3up(self, event):
+        '''Dragging is done'''
+        self.cursor = None
 
     def __init__(self, master=None, *ap, foreground="black", **an):
         self.foreground = StringVar()
@@ -56,6 +74,9 @@ class Paint(Canvas):
         self.bind("<Button-1>", self.mousedown)
         self.bind("<B1-Motion>", self.mousemove)
         self.bind("<ButtonRelease-1>", self.mouseup)
+        self.bind("<Button-3>", self.mouse3down)
+        self.bind("<B3-Motion>", self.mouse3move)
+        self.bind("<ButtonRelease-3>", self.mouse3up)
 
 
 class ButFrame(Frame):
@@ -79,6 +100,8 @@ class ButFrame(Frame):
             l.add((*self.Canvas.coords(i),self.Canvas.itemcget(i, "fill")))
         for i in self.Canvas1.find_all():
             l.add((*self.Canvas1.coords(i),self.Canvas1.itemcget(i, "fill")))
+
+        self.clear()
 
         for i in l:
             self.Canvas.create_line(i[:4],fill=i[4])
