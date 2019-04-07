@@ -50,6 +50,19 @@ class Paint(Canvas):
         '''Dragging is done'''
         self.cursor = None
 
+    def mousedownR(self, event):
+        self.movement = self.find_closest(event.x, event.y, halo = 10)
+        if self.movement:
+            self.points = self.coords(self.movement)
+            self.x3, self.y3 = event.x, event.y
+
+    def mousemoveR(self, event):
+        if self.movement:
+            self.coords(self.movement, (self.points[0] - (self.x3 - event.x)), (self.points[1] - (self.y3 - event.y)), (self.points[2] - (self.x3 - event.x)), (self.points[3] - (self.y3 - event.y)))
+
+    def mouseupR(self,event):
+        self.movement = None
+
     def __init__(self, master=None, *ap, foreground="black", **an):
         self.foreground = StringVar()
         self.foreground.set(foreground)
@@ -57,6 +70,9 @@ class Paint(Canvas):
         self.bind("<Button-1>", self.mousedown)
         self.bind("<B1-Motion>", self.mousemove)
         self.bind("<ButtonRelease-1>", self.mouseup)
+        self.bind("<Button-3>", self.mousedownR)
+        self.bind("<B3-Motion>", self.mousemoveR)
+        self.bind("<ButtonRelease-3>", self.mouseupR)
 
 class MyApp(App):
     def askcolorLeft(self):
