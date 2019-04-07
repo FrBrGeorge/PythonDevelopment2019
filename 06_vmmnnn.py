@@ -56,12 +56,47 @@ class Paint(Canvas):
         self.bind("<B1-Motion>", self.mousemove)
         self.bind("<ButtonRelease-1>", self.mouseup)
 
+
+class Paint2(Canvas):
+    '''Canvas with simple drawing'''
+
+    def mousedown(self, event):
+        '''Store mousedown coords'''
+        self.x0, self.y0 = event.x, event.y
+        self.cursor = None
+
+    def mousemove(self, event):
+        '''Do sometheing when drag a mouse'''
+        if self.cursor:
+            self.delete(self.cursor)
+        self.cursor = self.create_oval((self.x0, self.y0, event.x, event.y), fill=self.foreground.get())
+
+    def mouseup(self, event):
+        '''Dragging is done'''
+        self.cursor = None
+        # print(self.find_all())
+
+    def __init__(self, master=None, *ap, foreground="black", **an):
+        self.foreground = StringVar()
+        self.foreground.set(foreground)
+        Canvas.__init__(self, master, *ap, **an)
+        self.bind("<Button-1>", self.mousedown)
+        self.bind("<B1-Motion>", self.mousemove)
+        self.bind("<ButtonRelease-1>", self.mouseup)
+
+
 class MyApp(App):
     def askcolor(self):
         c = colorchooser.askcolor()[1]
         if (c):             # Cancel gives None
             self.Canvas.foreground.set(c)
             self.Frame.AskColor.configure(bg=c)
+
+    def askcolor2(self):
+        c = colorchooser.askcolor()[1]
+        if (c):             # Cancel gives None
+            self.Canvas2.foreground.set(c)
+            self.Frame.AskColor2.configure(bg=c)
 
    #     self.Canvas.foreground.set(colorchooser.askcolor()[1])
 
@@ -74,18 +109,18 @@ class MyApp(App):
         self.Frame.columnconfigure(0, weight=1)
 
         self.Frame.AskColor = Button(self.Frame, textvariable=self.Canvas.foreground, command=self.askcolor)
-       #                              bg=self.Canvas.foreground.get())
         self.Frame.AskColor.grid(row=0, column=0, sticky=N+W)
 
-        # self.AskColor = Button(self, textvariable=self.Canvas.foreground, command=self.askcolor,
-        #                           bg=self.Canvas.foreground.get())
-       # self.AskColor.grid(row=0, column=1, sticky=N+W)
 
-        #self.ShowColor = Label(self, textvariable=self.Canvas.foreground)
-        #self.ShowColor.grid(row=1, column=1, sticky=N+W+E)
+
+        self.Canvas2 = Paint2(self, foreground="blue")
+        self.Canvas2.grid(row=25, column=0, rowspan=3, sticky=N+E+S+W)
+
+        self.Frame.AskColor2 = Button(self.Frame, textvariable=self.Canvas2.foreground, command=self.askcolor2)
+        self.Frame.AskColor2.grid(row=25, column=0, sticky=N + W)
 
         self.Quit = Button(self, text="Quit", command=self.quit)
-        self.Quit.grid(row=2, column=1, sticky=N+W)
+        self.Quit.grid(row=27, column=1, sticky=N+W)
 
 app = MyApp(Title="Canvas Example")
 app.mainloop()
