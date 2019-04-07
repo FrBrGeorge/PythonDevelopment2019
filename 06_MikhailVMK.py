@@ -2,15 +2,15 @@
 '''
 Пример объектной организации кода
 '''
+import abc
 from collections import namedtuple
 PanelCoords = namedtuple("PanelCoords", ["row", "column", "rowspan", "columnspan"])
 
-from _tkinter import TclError
 from tkinter import *
 from tkinter import colorchooser
 
 from RgbNamedColors import Colors
-
+from MikhailVMK_Tools import *
 def encodedColorValid(encodedColor):
     if not isinstance(encodedColor, str):
         return False
@@ -102,27 +102,34 @@ class WorkSpace(App):
                             column=self._canvasPanelCoords.column,
                             rowspan=self._canvasPanelCoords.rowspan,
                             columnspan=self._canvasPanelCoords.columnspan,
-                            sticky=N+E+S+W) 
+                            sticky=N+E+S+W)
+        self._canvasPanel['borderwidth'] = 2
+        self._canvasPanel['relief'] = 'ridge'
+        self._canvasPanel1Coords = PanelCoords(row=4, column=0, rowspan = 3, columnspan = 1)
+        self._canvasPanel1 = CanvasPanel(self, self._canvasTools)
+        self._canvasPanel1.grid(row=self._canvasPanel1Coords.row,
+                            column=self._canvasPanel1Coords.column,
+                            rowspan=self._canvasPanel1Coords.rowspan,
+                            columnspan=self._canvasPanel1Coords.columnspan,
+                            sticky=N+E+S+W)
+        self._canvasPanel1['borderwidth'] = 2
+        self._canvasPanel1['relief'] = 'ridge'
     def _adjust(self):
         self.rowconfigure(0, weight=12)
         self.columnconfigure(0, weight=12)
         self.columnconfigure(1, weight=0)
-
-
     def printCanvasObjects(self):
         for item in self._canvasPanel.find_all():
-            print(*self._canvasPanel.coords(item), self._canvasPanel.itemcget(item, "fill"))
+            # print(self._canvasPanel.itemconfigure(item))
+            print(*self._canvasPanel.coords(item))
 
-        
 class CanvasPanel(Canvas):
-    '''Canvas with simple drawing'''
     def _mousedown(self, event):
-        self._canvasTools.mousedown(self, event)
+        self._canvasTools.canvasMouseDown(self, event)
     def _mousemove(self, event):   
-        self._canvasTools.mousemove(self, event)
+        self._canvasTools.canvasMouseMove(self, event)
     def _mouseup(self, event):   
-        self._canvasTools.mouseup(self, event)
-
+        self._canvasTools.canvasMouseUp(self, event)
     def __init__(self, master=None, canvasTools=None, *ap, **an):
         Canvas.__init__(self, master, *ap, **an)
         self._canvasTools = canvasTools
@@ -134,7 +141,18 @@ class CanvasToolPanel(Frame):
     def __init__(self, root, color='black'):
         Frame.__init__(self, root)
         self['borderwidth'] = 2
-        self['relief'] = 'raised'
+        self['relief'] = 'ridge'
+        
+        self._itembuffer = []        
+        self._tools = []
+        self._tools.append(Line(self))
+        # self._tools.append(Rectangle(self))
+        self._tools.append(Find(self, self._itembuffer))
+        self._tools.append(FindAll(self, self._itembuffer))
+        self._tools.append(Insert(self, self._itembuffer, self._tools))
+        
+        self._selected = None
+        
         self._toolColor = StringVar()
         self._toolColor.set(color)
         self._askColor = Button(self, text="Color", command=self._askcolor)
@@ -148,6 +166,7 @@ class CanvasToolPanel(Frame):
         self._showColor.grid(row=1, column=0, sticky=N+W+E)
         self._quit = Button(self, text="Quit", command=root.quit)
         self._quit.grid(row=2, column=0, sticky=N+W)
+        self._layoutTools()
 
     def _askcolor(self):
         color = colorchooser.askcolor(color = self._toolColor.get())[1]
@@ -155,21 +174,37 @@ class CanvasToolPanel(Frame):
         self._showColor.config(background = color)
         self._showColor.config(foreground = encodeColor(getContrastColor(decodeColor(color))))
     
-    def mousedown(self, canvasPanel, event):
-        '''Store mousedown coords'''
-        canvasPanel.x0, canvasPanel.y0 = event.x, event.y
-        canvasPanel.cursor = None 
-    def mousemove(self, canvasPanel, event):
-        '''Do sometheing when drag a mouse'''
-        if canvasPanel.cursor:
-            canvasPanel.delete(canvasPanel.cursor)
-        canvasPanel.cursor = canvasPanel.create_line((canvasPanel.x0, canvasPanel.y0, event.x, event.y), fill=self._toolColor.get())
+    def _layoutTools(self):
+        for tool in self._tools:
+            tool.grid(row=self.grid_size()[1], column=0, sticky=N+W)
+            tool['borderwidth'] = 2
+            tool['relief'] = 'raised'
+    def canvasMouseDown(self, canvasPanel, event):
+        if self._selected is not None:
+            self._selected.canvasMouseDown(canvasPanel, self._toolColor.get(), event)
+    def canvasMouseMove(self, canvasPanel, event):
+        if self._selected is not None:
+            self._selected.canvasMouseMove(canvasPanel, self._toolColor.get(), event)
+    def canvasMouseUp(self, canvasPanel, event):
+        if self._selected is not None:
+            self._selected.canvasMouseUp(canvasPanel, self._toolColor.get(), event)
+    def toolMouseDown(self, tool):
+        if self._selected is None:
+            self._selectTool(tool)
+            self._selected = tool
+        elif self._selected == tool:
+            self._deselectTool(tool)  
+            self._selected = None
+        else:
+            self._deselectTool(self._selected)
+            self._selectTool(tool)
+            self._selected = tool
 
-    def mouseup(self, canvasPanel, event):
-        '''Dragging is done'''
-        canvasPanel.cursor = None
-        
+    def _selectTool(self, tool):
+        tool.configure(relief = 'sunken')
+    def _deselectTool(self, tool):
+        tool.configure(relief = 'raised')
 
 app = WorkSpace(Title="Canvas Example")
 app.mainloop()
-app.printCanvasObjects()
+# app.printCanvasObjects()
