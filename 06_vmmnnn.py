@@ -108,6 +108,11 @@ class MyApp(App):
         for item in self.Canvas.find_withtag("line"):
             self.Canvas2.create_line(self.Canvas.coords(item),fill = app.Canvas.itemcget(item, "fill"), tag="line")
 
+    def CleanUp(self):
+        self.Canvas.delete(ALL)
+
+    def CleanDown(self):
+        self.Canvas2.delete(ALL)
 
     def create(self):
 
@@ -124,18 +129,22 @@ class MyApp(App):
         self.Frame.CopyUp = Button(self.Frame, text="Copy up", command=self.CopyUp)
         self.Frame.CopyUp.grid(row=10, column=0, sticky=N+W)
 
+        self.Frame.CleanUp = Button(self.Frame, text="Clean up", command=self.CleanUp)
+        self.Frame.CleanUp.grid(row=15, column=0, sticky=N + W)
+
 
 
         self.Canvas2 = Paint2(self, foreground="blue")
         self.Canvas2.grid(row=25, column=0, rowspan=3, sticky=N+E+S+W)
 
         self.Frame.AskColor2 = Button(self.Frame, textvariable=self.Canvas2.foreground, command=self.askcolor2)
-        self.Frame.AskColor2.grid(row=25, column=0, sticky=N+W)
+        self.Frame.AskColor2.grid(row=20, column=0, sticky=N+W)
 
         self.Frame.CopyDown = Button(self.Frame, text="Copy down", command=self.CopyDown)
-        self.Frame.CopyDown.grid(row=20, column=0, sticky=N+W)
+        self.Frame.CopyDown.grid(row=25, column=0, sticky=N+W)
 
-
+        self.Frame.CleanDown = Button(self.Frame, text="Clean down", command=self.CleanDown)
+        self.Frame.CleanDown.grid(row=30, column=0, sticky=N + W)
 
         self.Quit = Button(self, text="Quit", command=self.quit)
         self.Quit.grid(row=27, column=1, sticky=N+W)
