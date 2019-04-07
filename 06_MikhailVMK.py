@@ -30,7 +30,7 @@ class App(Frame):
         for i in range(self.size()[1]):
             self.rowconfigure(i, weight=12)
         
-class Paint(Canvas):
+class CanvasPanel(Canvas):
     '''Canvas with simple drawing'''
     def mousedown(self, event):
         '''Store mousedown coords'''
@@ -56,24 +56,30 @@ class Paint(Canvas):
         self.bind("<B1-Motion>", self.mousemove)
         self.bind("<ButtonRelease-1>", self.mouseup)
 
-class MyApp(App):
+class WorkSpace(App):
+    def create(self):
+        self.canvasPanel = CanvasPanel(self, foreground="midnightblue")
+        self.canvasPanel.grid(row=0, column=0, rowspan=3, sticky=N+E+S+W)        
+        self.canvasTools = CanvasToolPanel(self, self.canvasPanel)
+        self.canvasTools.grid(row=0, column=1, rowspan=3, sticky=N+E+S+W)
+
+class CanvasToolPanel(Frame):
+    def __init__(self, root, canvasPanel):
+        Frame.__init__(self, root)
+        self._canvasPanel = canvasPanel
+        self._askColor = Button(self, text="Color", command=self.askcolor)
+        self._askColor.grid(row=0, column=0, sticky=N+W)
+        self._showColor = Label(self, textvariable=self._canvasPanel.foreground)
+        self._showColor.grid(row=1, column=0, sticky=N+W+E)
+        self._quit = Button(self, text="Quit", command=root.quit)
+        self._quit.grid(row=2, column=0, sticky=N+W)
+
     def askcolor(self):
         self.Canvas.foreground.set(colorchooser.askcolor()[1])
 
-    def create(self):
-        self.Canvas = Paint(self, foreground="midnightblue")
-        self.Canvas.grid(row=0, column=0, rowspan=3, sticky=N+E+S+W)    
-        self.ToolPanel = Frame(self)
-        self.ToolPanel.grid(row=0, column=1, rowspan=3, sticky=N+E+S+W)
-        self.ToolPanel.AskColor = Button(self.ToolPanel, text="Color", command=self.askcolor)
-        self.ToolPanel.AskColor.grid(row=0, column=1, sticky=N+W)
-        self.ToolPanel.ShowColor = Label(self.ToolPanel, textvariable=self.Canvas.foreground)
-        self.ToolPanel.ShowColor.grid(row=1, column=1, sticky=N+W+E)
-        self.ToolPanel.Quit = Button(self.ToolPanel, text="Quit", command=self.quit)
-        self.ToolPanel.Quit.grid(row=2, column=1, sticky=N+W)
 
-app = MyApp(Title="Canvas Example")
+app = WorkSpace(Title="Canvas Example")
 app.mainloop()
-for item in app.Canvas.find_all():
-    print(*app.Canvas.coords(item), app.Canvas.itemcget(item, "fill"))
+for item in app.canvasPanel.find_all():
+    print(*app.canvasPanel.coords(item), app.canvasPanel.itemcget(item, "fill"))
 
