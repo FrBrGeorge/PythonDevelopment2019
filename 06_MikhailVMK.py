@@ -66,7 +66,7 @@ class WorkSpace(App):
                             column=self._canvasPanelCoords.column,
                             rowspan=self._canvasPanelCoords.rowspan,
                             columnspan=self._canvasPanelCoords.columnspan,
-                            sticky=N+E+S+W)        
+                            sticky=N+E+S+W) 
         self._canvasToolsCoords = PanelCoords(row=0, column=1, rowspan = 3, columnspan = 1) 
         self._canvasTools = CanvasToolPanel(self, self._canvasPanel)
         self._canvasTools.grid(row=self._canvasToolsCoords.row,
@@ -92,14 +92,14 @@ class CanvasToolPanel(Frame):
         self._canvasPanel = canvasPanel
         self._askColor = Button(self, text="Color", command=self._askcolor)
         self._askColor.grid(row=0, column=0, sticky=N+W)
-        self._showColor = Label(self, textvariable=self._canvasPanel.foreground)
+        self._showColor = Label(self, textvariable=self._canvasPanel.foreground, background = self._canvasPanel.foreground.get())
         self._showColor.grid(row=1, column=0, sticky=N+W+E)
         self._quit = Button(self, text="Quit", command=root.quit)
         self._quit.grid(row=2, column=0, sticky=N+W)
 
     def _askcolor(self):
-        self.Canvas.foreground.set(colorchooser.askcolor()[1])
-
+        self._canvasPanel.foreground.set(colorchooser.askcolor()[1])
+        self._showColor.config(background = self._canvasPanel.foreground.get())
 
 app = WorkSpace(Title="Canvas Example")
 app.mainloop()
