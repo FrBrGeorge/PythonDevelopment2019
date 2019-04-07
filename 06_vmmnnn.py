@@ -5,6 +5,9 @@
 
 from tkinter import *
 from tkinter import colorchooser
+from tkinter.filedialog import askopenfilename
+from tkinter.filedialog import asksaveasfilename
+import os
 
 class App(Frame):
     '''Base framed application class'''
@@ -114,8 +117,25 @@ class MyApp(App):
     def CleanDown(self):
         self.Canvas2.delete(ALL)
 
-    def create(self):
+    def save(self):
+        file = asksaveasfilename(filetypes = [("TXT files", "*.txt")], defaultextension = ".txt", initialdir = os.getcwd(), initialfile = "vmmnnn.txt")
+        if (file):
+            with open(file, 'w') as f:
+                for item in self.Canvas.find_withtag("line"):
+                    for coord in self.Canvas.coords(item):
+                        f.write(f'{coord} ')
+                    f.write(f'{app.Canvas.itemcget(item, "fill")}\n')
 
+    def load(self):
+        file = askopenfilename(filetypes = [("TXT files", "*.txt")], initialdir = os.getcwd())
+        if (file):
+            self.Canvas.delete(ALL)
+            with open(file, 'r') as f:
+                for line in f:
+                    s = line.split()
+                    self.Canvas.create_line([float(s[0]), float(s[1]), float(s[2]), float(s[3])], fill = s[4])
+
+    def create(self):
         self.Canvas = Paint(self, foreground="blue")
         self.Canvas.grid(row=0, column=0, rowspan=3, sticky=N+E+S+W)
 
@@ -146,8 +166,18 @@ class MyApp(App):
         self.Frame.CleanDown = Button(self.Frame, text="Clean down", command=self.CleanDown)
         self.Frame.CleanDown.grid(row=30, column=0, sticky=N + W)
 
+
+
+
+        self.Save = Button(self, text="Save lines", command=self.save)
+        self.Save.grid(row=20, column=1, sticky=N+W)
+
+        self.Load = Button(self, text="Load lines", command=self.load)
+        self.Load.grid(row=23, column=1, sticky=N + W)
+
         self.Quit = Button(self, text="Quit", command=self.quit)
         self.Quit.grid(row=27, column=1, sticky=N+W)
+
 
 app = MyApp(Title="Canvas Example")
 app.mainloop()
