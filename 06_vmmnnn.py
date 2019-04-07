@@ -41,7 +41,8 @@ class Paint(Canvas):
         '''Do sometheing when drag a mouse'''
         if self.cursor:
             self.delete(self.cursor)
-        self.cursor = self.create_line((self.x0, self.y0, event.x, event.y), fill=self.foreground.get())
+        self.cursor = self.create_line((self.x0, self.y0, event.x, event.y), fill=self.foreground.get(), tag="line")
+       # self.elem.append(self.cursor)
 
     def mouseup(self, event):
         '''Dragging is done'''
@@ -69,7 +70,8 @@ class Paint2(Canvas):
         '''Do sometheing when drag a mouse'''
         if self.cursor:
             self.delete(self.cursor)
-        self.cursor = self.create_oval((self.x0, self.y0, event.x, event.y), fill=self.foreground.get())
+        self.cursor = self.create_oval((self.x0, self.y0, event.x, event.y), fill=self.foreground.get(), tag="oval")
+        #self.elem2.append(self.cursor)
 
     def mouseup(self, event):
         '''Dragging is done'''
@@ -98,9 +100,17 @@ class MyApp(App):
             self.Canvas2.foreground.set(c)
             self.Frame.AskColor2.configure(bg=c)
 
-   #     self.Canvas.foreground.set(colorchooser.askcolor()[1])
+    def CopyUp(self):
+        for item in self.Canvas2.find_withtag("oval"):
+            self.Canvas.create_oval(self.Canvas2.coords(item),fill = app.Canvas2.itemcget(item, "fill"), tag="oval")
+
+    def CopyDown(self):
+        for item in self.Canvas.find_withtag("line"):
+            self.Canvas2.create_line(self.Canvas.coords(item),fill = app.Canvas.itemcget(item, "fill"), tag="line")
+
 
     def create(self):
+
         self.Canvas = Paint(self, foreground="blue")
         self.Canvas.grid(row=0, column=0, rowspan=3, sticky=N+E+S+W)
 
@@ -111,13 +121,21 @@ class MyApp(App):
         self.Frame.AskColor = Button(self.Frame, textvariable=self.Canvas.foreground, command=self.askcolor)
         self.Frame.AskColor.grid(row=0, column=0, sticky=N+W)
 
+        self.Frame.CopyUp = Button(self.Frame, text="Copy up", command=self.CopyUp)
+        self.Frame.CopyUp.grid(row=10, column=0, sticky=N+W)
+
 
 
         self.Canvas2 = Paint2(self, foreground="blue")
         self.Canvas2.grid(row=25, column=0, rowspan=3, sticky=N+E+S+W)
 
         self.Frame.AskColor2 = Button(self.Frame, textvariable=self.Canvas2.foreground, command=self.askcolor2)
-        self.Frame.AskColor2.grid(row=25, column=0, sticky=N + W)
+        self.Frame.AskColor2.grid(row=25, column=0, sticky=N+W)
+
+        self.Frame.CopyDown = Button(self.Frame, text="Copy down", command=self.CopyDown)
+        self.Frame.CopyDown.grid(row=20, column=0, sticky=N+W)
+
+
 
         self.Quit = Button(self, text="Quit", command=self.quit)
         self.Quit.grid(row=27, column=1, sticky=N+W)
