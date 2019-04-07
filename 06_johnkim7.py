@@ -37,16 +37,63 @@ class Paint(Canvas):
         '''Store mousedown coords'''
         self.x0, self.y0 = event.x, event.y
         self.cursor = None
+        self.anotherOne.cursor = None
 
     def mousemove(self, event):
         '''Do sometheing when drag a mouse'''
         if self.cursor:
             self.delete(self.cursor)
+        if self.anotherOne.cursor:
+            self.anotherOne.delete(self.cursor)
         self.cursor = self.create_line((self.x0, self.y0, event.x, event.y), fill=self.foreground.get())
-
+        self.anotherOne.cursor = self.anotherOne.create_line((self.x0, self.y0, event.x, event.y), fill=self.foreground.get())
+    
     def mouseup(self, event):
         '''Dragging is done'''
+        self.anotherOne.cursor = None
         self.cursor = None
+    
+    def thirddown(self, event):
+        self.x00, self.y00 = event.x, event.y
+        self.item = self.find_closest(event.x, event.y)[0]
+        self.itemS = self.anotherOne.find_closest(event.x, event.y)[0]
+    
+    def thirdmove(self, event):
+        self.move(self.item, event.x - self.x00, event.y - self.y00)
+        self.anotherOne.move(self.itemS, event.x - self.x00, event.y - self.y00)
+        self.x00 = event.x
+        self.y00 = event.y
+    
+    def thirdup(self, event):
+        return
+    
+    
+    def __init__(self, master=None, *ap, foreground="black", **an):
+        self.foreground = StringVar()
+        self.foreground.set(foreground)
+        Canvas.__init__(self, master, *ap, **an)
+        self.bind("<Button-1>", self.mousedown)
+        self.bind("<B1-Motion>", self.mousemove)
+        self.bind("<ButtonRelease-1>", self.mouseup)
+        self.bind("<Button-3>", self.thirddown)
+        self.bind("<B3-Motion>", self.thirdmove)
+        self.bind("<ButtonRelease-3>", self.thirdup)
+        
+        self.anotherOne = None
+
+def thirddown(self, event):
+    self.x00, self.y00 = event.x, event.y
+        self.item = self.find_closest(event.x, event.y)[0]
+        self.itemS = self.anotherOne.find_closest(event.x, event.y)[0]
+
+    def thirdmove(self, event):
+        self.move(self.item, event.x - self.x00, event.y - self.y00)
+        self.anotherOne.move(self.itemS, event.x - self.x00, event.y - self.y00)
+        self.x00 = event.x
+        self.y00 = event.y
+
+def thirdup(self, event):
+    return
 
     def __init__(self, master=None, *ap, foreground="black", **an):
         self.foreground = StringVar()
