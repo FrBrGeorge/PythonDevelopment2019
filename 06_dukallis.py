@@ -80,6 +80,26 @@ class MyApp(App):
     def cleanR(self):
         self.CanvasTwo.delete(ALL)
 
+    def save(self):
+        fname = asksaveasfilename(filetypes = [("tkTXT", "*.tkTXT")], defaultextension = "tkTXT", initialfile = "dukallis.tkTXT", initialdir = os.getcwd())
+        if (fname != ''):
+            f = open(fname, 'w')
+            for item in self.CanvasTwo.find_all():
+                for coord in self.CanvasTwo.coords(item):
+                    f.write(f'{coord} ')
+                f.write(f'{app.CanvasTwo.itemcget(item, "fill")}\n')
+            f.close()
+
+    def load(self):
+        fname = askopenfilename(filetypes = [("tkTXT", "*.tkTXT")], initialdir = os.getcwd())
+        if (fname != ''):
+            self.CanvasTwo.delete(ALL)
+            f = open(fname, 'r')
+            for ln in f:
+                entry = ln.split()
+                self.CanvasTwo.create_line([float(entry[0]), float(entry[1]), float(entry[2]), float(entry[3])], fill = entry[4])
+            f.close()
+
     def create(self):
         self.Canvas = Paint(self, foreground="midnightblue")
         self.Canvas.grid(row=0, column=0, sticky=N+E+S+W)
@@ -100,9 +120,9 @@ class MyApp(App):
         self.Frame.CleanLeft.grid(row=2, column=0, sticky=N+W)
         self.Frame.CleanRight = Button(self.Frame, text="Clean right", command=self.cleanR)
         self.Frame.CleanRight.grid(row=2, column=1, sticky=N+E)
-        self.Frame.SaveRight = Button(self.Frame, text="Save")
+        self.Frame.SaveRight = Button(self.Frame, text="Save", command=self.save)
         self.Frame.SaveRight.grid(row=3, column=1, sticky=N+E)
-        self.Frame.LoadRight = Button(self.Frame, text="Load")
+        self.Frame.LoadRight = Button(self.Frame, text="Load", command=self.load)
         self.Frame.LoadRight.grid(row=4, column=1, sticky=N+E)
         self.Frame.Quit = Button(self.Frame, text="Quit", command=self.quit)
         self.Frame.Quit.grid(row=6, column=0, columnspan=2, sticky=S)
