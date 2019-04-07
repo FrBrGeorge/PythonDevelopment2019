@@ -58,7 +58,6 @@ class Paint(Canvas):
         self.bind("<B1-Motion>", self.mousemove)
         self.bind("<ButtonRelease-1>", self.mouseup)
 
-
 class MyApp(App):
     def askcolorLeft(self):
         self.Canvas.foreground.set(colorchooser.askcolor()[1])
@@ -108,9 +107,9 @@ class MyApp(App):
         self.Frame = Frame(self, relief = GROOVE, bd = 3)
         self.Frame.grid(row=0, column=1, sticky=N+E+S+W)
         self.Frame.columnconfigure(0, weight=1)
-        self.Frame.AskColor = Button(self.Frame, text="Left color", command=self.askcolorLeft)
+        self.Frame.AskColor = Button(self.Frame, text="Left color", command=self.askcolorLeft, bg = self.Canvas.foreground.get())
         self.Frame.AskColor.grid(row=0, column=0, sticky=N+W)
-        self.Frame.AskColorTwo = Button(self.Frame, text="Right color", command=self.askcolorRight)
+        self.Frame.AskColorTwo = Button(self.Frame, text="Right color", command=self.askcolorRight, bg = self.CanvasTwo.foreground.get())
         self.Frame.AskColorTwo.grid(row=0, column=1, sticky=N+E)
         self.Frame.CopyLeft = Button(self.Frame, text="Copy to the right", command=self.cpLtoR)
         self.Frame.CopyLeft.grid(row=1, column=0, sticky=N+W)
