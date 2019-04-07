@@ -46,7 +46,6 @@ class Paint(Canvas):
     def mouseup(self, event):
         '''Dragging is done'''
         self.cursor = None
-        #print(self.find_all())
 
     def __init__(self, master=None, *ap, foreground="black", **an):
         self.foreground = StringVar()
@@ -56,6 +55,7 @@ class Paint(Canvas):
         self.bind("<B1-Motion>", self.mousemove)
         self.bind("<ButtonRelease-1>", self.mouseup)
 
+
 class MyApp(App):
     def askcolor(self):
         self.Canvas.foreground.set(colorchooser.askcolor()[1])
@@ -63,6 +63,8 @@ class MyApp(App):
     def create(self):
         self.Canvas = Paint(self, foreground="midnightblue")
         self.Canvas.grid(row=0, column=0, rowspan=3, sticky=N+E+S+W)
+        self.CanvasTwo = Paint(self, foreground = "midnightblue")
+        self.CanvasTwo.grid(row=0, column=2, rowspan=3, sticky=N+E+S+W)
         self.AskColor = Button(self, text="Color", command=self.askcolor)
         self.AskColor.grid(row=0, column=1, sticky=N+W)
         self.ShowColor = Label(self, textvariable=self.Canvas.foreground)
