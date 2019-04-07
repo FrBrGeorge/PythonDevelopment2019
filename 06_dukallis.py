@@ -5,6 +5,9 @@
 
 from tkinter import *
 from tkinter import colorchooser
+from tkinter.filedialog import askopenfilename
+from tkinter.filedialog import asksaveasfilename
+import os
 
 class App(Frame):
     '''Base framed application class'''
@@ -57,8 +60,11 @@ class Paint(Canvas):
 
 
 class MyApp(App):
-    def askcolor(self):
+    def askcolorLeft(self):
         self.Canvas.foreground.set(colorchooser.askcolor()[1])
+
+    def askcolorRight(self):
+        self.CanvasTwo.foreground.set(colorchooser.askcolor()[1])
 
     def create(self):
         self.Canvas = Paint(self, foreground="midnightblue")
@@ -68,9 +74,9 @@ class MyApp(App):
         self.Frame = Frame(self, relief = GROOVE, bd = 3)
         self.Frame.grid(row=0, column=1, sticky=N+E+S+W)
         self.Frame.columnconfigure(0, weight=1)
-        self.Frame.AskColor = Button(self.Frame, text="Left color", command=self.askcolor)
+        self.Frame.AskColor = Button(self.Frame, text="Left color", command=self.askcolorLeft)
         self.Frame.AskColor.grid(row=0, column=0, sticky=N+W)
-        self.Frame.AskColorTwo = Button(self.Frame, text="Right color")
+        self.Frame.AskColorTwo = Button(self.Frame, text="Right color", command=self.askcolorRight)
         self.Frame.AskColorTwo.grid(row=0, column=1, sticky=N+E)
         self.Frame.CopyLeft = Button(self.Frame, text="Copy to the right")
         self.Frame.CopyLeft.grid(row=1, column=0, sticky=N+W)
