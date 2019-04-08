@@ -59,7 +59,8 @@ class Paint(Canvas):
 class MyApp(App):
     def askcolor(self):
         color = colorchooser.askcolor()
-        self.Canvas.foreground.set(color[1])
+        self.CanvasLeft.foreground.set(color[1])
+        self.CanvasRight.foreground.set(color[1])
         self.Control.ShowColor.configure(bg=color[1])
         if 1 - (0.299 * color[0][0] + 0.587 * color[0][1] + 0.114 * color[0][2]) / 255 < 0.5:
             self.Control.ShowColor.configure(fg="black")
@@ -67,8 +68,11 @@ class MyApp(App):
             self.Control.ShowColor.configure(fg="white")
 
     def create(self):
-        self.Canvas = Paint(self, foreground="midnightblue")
-        self.Canvas.grid(row=0, column=0, rowspan=3, sticky=N+E+S+W)
+        self.CanvasLeft = Paint(self, foreground="midnightblue")
+        self.CanvasLeft.grid(row=0, column=0, rowspan=3, sticky=N+E+S+W)
+
+        self.CanvasRight = Paint(self, foreground="midnightblue")
+        self.CanvasRight.grid(row=0, column=2, rowspan=3, sticky=N+E+S+W)
 
         self.Control = Frame()
         self.Control.grid(row=0, column=1, sticky=N+E+S+W)
@@ -76,7 +80,7 @@ class MyApp(App):
         self.Control.AskColor = Button(self.Control, text="Color", command=self.askcolor)
         self.Control.AskColor.grid(row=0, column=0, sticky=W+E)
 
-        self.Control.ShowColor = Label(self.Control, textvariable=self.Canvas.foreground, bg="midnightblue", fg="white")
+        self.Control.ShowColor = Label(self.Control, textvariable=self.CanvasLeft.foreground, bg="midnightblue", fg="white")
         self.Control.ShowColor.grid(row=1, column=0, sticky=W+E)
 
         self.Control.Quit = Button(self.Control, text="Quit", command=self.quit)
@@ -84,6 +88,10 @@ class MyApp(App):
 
 app = MyApp(Title="Canvas Example")
 app.mainloop()
-for item in app.Canvas.find_all():
-    print(*app.Canvas.coords(item), app.Canvas.itemcget(item, "fill"))
+for item in app.CanvasLeft.find_all():
+    print("Left Canvas:")
+    print(*app.CanvasLeft.coords(item), app.CanvasLeft.itemcget(item, "fill"))
+for item in app.CanvasRight.find_all():
+    print("Right Canvas:")
+    print(*app.CanvasRight.coords(item), app.CanvasRight.itemcget(item, "fill"))
 
