@@ -47,6 +47,18 @@ class Paint(Canvas):
         '''Dragging is done'''
         self.cursor = None
 
+    def select(self, event):
+        self.x1, self.y1 = event.x, event.y
+        self.item = self.find_closest(event.x, event.y)[0]
+
+    def linemove(self, event):
+        self.move(self.item, event.x - self.x1, event.y - self.y1)
+        self.x1 = event.x
+        self.y1 = event.y
+
+    def up(self, event):
+        return
+
     def __init__(self, master=None, *ap, foreground="black", **an):
         self.foreground = StringVar()
         self.foreground.set(foreground)
@@ -54,6 +66,9 @@ class Paint(Canvas):
         self.bind("<Button-1>", self.mousedown)
         self.bind("<B1-Motion>", self.mousemove)
         self.bind("<ButtonRelease-1>", self.mouseup)
+        self.bind("<Button-3>", self.select)
+        self.bind("<B3-Motion>", self.linemove)
+        self.bind("<ButtonRelease-3>", self.up)
 
 class MyApp(App):
     def askcolor(self):
