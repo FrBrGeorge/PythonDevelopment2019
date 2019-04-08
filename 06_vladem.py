@@ -104,11 +104,14 @@ class MyApp(App):
         self.Quit = Button(frame, text="Quit", command=self.quit)
         self.Quit.grid(row=2, column=0)
 
-        self.Write = Button(frame, text = "Write", command = self.write)
-        self.Write.grid(row = 3, column = 0)
-
         self.Clear = Button(frame, text = "Clear", command = self.clearCanvas)
         self.Clear.grid(row = 4, column = 0)
+
+        self.Read = Button(frame, text = "Read", command = self.read)
+        self.Read.grid(row = 5, column = 0)
+
+        self.Write = Button(frame, text = "Write", command = self.write)
+        self.Write.grid(row = 6, column = 0)
 
 app = MyApp(Title="Canvas Example")
 app.mainloop()
