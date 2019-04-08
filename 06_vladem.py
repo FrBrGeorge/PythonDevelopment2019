@@ -64,8 +64,9 @@ class MyApp(App):
         self.ShowColor.configure(fg = self.Canvas.foreground.get())
         self.Canvas.configure(bg = self.Canvas.foreground.get())
 
-    def clear(self):
+    def clearCanvas(self):
         self.Canvas.delete("all")
+        self.CanvasCopy.delete("all")
 
     def write(self):
         file = filedialog.asksaveasfilename()
@@ -104,7 +105,10 @@ class MyApp(App):
         self.Quit.grid(row=2, column=0)
 
         self.Write = Button(frame, text = "Write", command = self.write)
-        self.Write.grid(row = 4, column = 0)
+        self.Write.grid(row = 3, column = 0)
+
+        self.Clear = Button(frame, text = "Clear", command = self.clearCanvas)
+        self.Clear.grid(row = 4, column = 0)
 
 app = MyApp(Title="Canvas Example")
 app.mainloop()
