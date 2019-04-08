@@ -4,7 +4,7 @@
 '''
 
 from tkinter import *
-from tkinter import colorchooser
+from tkinter import colorchooser, filedialog
 
 class App(Frame):
     '''Base framed application class'''
@@ -73,6 +73,32 @@ class MyApp(App):
     def clear(self):
         self.CanvasLeft.delete("all")
         self.CanvasRight.delete("all")
+    
+    def save(self, Canvas):
+        fileName = filedialog.asksaveasfilename(filetypes = (("Text file", "*.txt"),))
+        if not fileName:
+            return
+        f = open(fileName, "w")
+        for line in Canvas.find_all():
+            print(*Canvas.coords(line), Canvas.itemcget(line, "fill"), file=f)
+        f.close()
+
+    def load(self, Canvas):
+        fileName = filedialog.askopenfilename(filetypes=(("Text file", "*.txt"),))
+        if not fileName:
+            return
+        f = open(fileName, "r")
+        for line in f.readlines():
+            splittedLine = line.split(" ")
+            x1 = splittedLine[0]
+            y1 = splittedLine[1]
+            x2 = splittedLine[2]
+            y2 = splittedLine[3]
+            color = splittedLine[4]
+            if color[-1] == '\n':
+                color = color[:-1]
+            Canvas.create_line((x1, y1, x2, y2), fill=color)
+        f.close()
 
     def create(self):
         self.CanvasLeft = Paint(self, foreground="midnightblue")
@@ -99,8 +125,20 @@ class MyApp(App):
         self.Control.CopyRightToLeft = Button(self.Control, text="<- Copy", command=lambda:self.copy(self.CanvasRight, self.CanvasLeft))
         self.Control.CopyRightToLeft.grid(row=4, column=0, sticky=W+E)
 
+        self.Control.SaveLeft = Button(self.Control, text="Save left picture", command=lambda:self.save(self.CanvasLeft))
+        self.Control.SaveLeft.grid(row=5, column=0, sticky=W+E)
+
+        self.Control.SaveRight = Button(self.Control, text="Save right picture", command=lambda:self.save(self.CanvasRight))
+        self.Control.SaveRight.grid(row=6, column=0, sticky=W+E)
+
+        self.Control.LoadLeft = Button(self.Control, text="Load left picture", command=lambda:self.load(self.CanvasLeft))
+        self.Control.LoadLeft.grid(row=7, column=0, sticky=W+E)
+
+        self.Control.LoadRight = Button(self.Control, text="Load right picture", command=lambda:self.load(self.CanvasRight))
+        self.Control.LoadRight.grid(row=8, column=0, sticky=W+E)
+
         self.Control.Quit = Button(self.Control, text="Quit", command=self.quit)
-        self.Control.Quit.grid(row=5, column=0, sticky=W+E)
+        self.Control.Quit.grid(row=9, column=0, sticky=W+E)
 
 app = MyApp(Title="Canvas Example")
 app.mainloop()
