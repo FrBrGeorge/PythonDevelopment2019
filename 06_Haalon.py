@@ -1,8 +1,3 @@
-#!/usr/bin/env python3
-'''
-Пример объектной организации кода
-'''
-
 from tkinter import *
 from tkinter import colorchooser
 from tkinter import filedialog
@@ -29,6 +24,11 @@ class App(Frame):
         self.painter2 = Painter(master = self)
         self.painter2.grid(row = 0, column = 1)
 
+        self.painter2.add_ref(self.painter1)
+        self.painter1.add_ref(self.painter2)
+
+
+
         adjust(self)        
 
 
@@ -40,6 +40,7 @@ class Painter(Frame):
         self.master.columnconfigure(0, weight=1)
         self['borderwidth'] = 2
         self['relief'] = 'ridge'
+        self.copy_painter = None
         
         if not master:
             self.master.title(Title)
@@ -73,6 +74,16 @@ class Painter(Frame):
                 cords, col = line.split('::')
                 self.Canvas.create_line( eval(cords), fill = col)
 
+    def add_ref(self, other):
+        self.copy_painter = other
+
+    def copy(self):
+        if self.copy_painter:
+            for item in self.copy_painter.Canvas.find_all():
+                coords = self.copy_painter.Canvas.coords(item)
+                col = self.copy_painter.Canvas.itemcget(item, "fill")
+                self.Canvas.create_line(coords, fill = col)
+
     def create(self):
         self.Canvas = MyCanvas(self, foreground="midnightblue")
         self.Canvas.grid(row=0, column=0, sticky=N+E+S+W)
@@ -90,22 +101,14 @@ class Painter(Frame):
         self.Clear = Button(control, text = 'Clear', command = self.clear)
         self.Clear.grid(row=0, column=2, sticky=N+E+W)
 
+        self.Copy = Button(control, text = 'Copy', command = self.copy)
+        self.Copy.grid(row=0, column=3, sticky=N+E+W)
+
         self.AskColor = Button(control, text="Color", command=self.askcolor)
-        self.AskColor.grid(row=0, column=3, sticky=N+E+W)
+        self.AskColor.grid(row=0, column=4, sticky=N+E+W)
 
         self.ShowColor = Label(control, textvariable=self.Canvas.foreground, foreground = "midnightblue")
-        self.ShowColor.grid(row=0, column=4, sticky=N+E+W)
-
-        # tkinter.filedialog
-
-
-        # self.Quit = Button(control, text="Quit", command=self.quit)
-        # self.Quit.grid(row=0, column=2, sticky=N+E+W)
-
-        # self.Swap = Button(control, text = 'Swap', command = self.swap)
-        # self.Swap.grid(row=0, column=3, sticky=N+E+W)
-
-
+        self.ShowColor.grid(row=0, column=5, sticky=N+E+W)
 
         adjust(control, col_val = 0)
 
@@ -167,5 +170,3 @@ class MyCanvas(Canvas):
 
 app = App(Title="Canvas Example")
 app.mainloop()
-# for item in app.Canvas.find_all():
-#     print(*app.Canvas.coords(item), app.Canvas.itemcget(item, "fill"))
