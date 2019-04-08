@@ -5,6 +5,7 @@
 
 from tkinter import *
 from tkinter import colorchooser
+from tkinter import filedialog
 
 class App(Frame):
     '''Base framed application class'''
@@ -59,17 +60,51 @@ class Paint(Canvas):
 class MyApp(App):
     def askcolor(self):
         self.Canvas.foreground.set(colorchooser.askcolor()[1])
+        # change background / foreground color 
         self.ShowColor.configure(fg = self.Canvas.foreground.get())
+        self.Canvas.configure(bg = self.Canvas.foreground.get())
 
+    def clear(self):
+        self.Canvas.delete("all")
+
+    def write(self):
+        file = filedialog.asksaveasfilename()
+        with open(file, "w") as out_file:
+            for item in self.Canvas.find_all():
+                print(*self.Canvas.coords(item), self.Canvas.itemcget(item, "fill"), file = out_file)
+
+    def read(self):
+        file = filedialog.askopenfilename()
+        with open(file, "r") as in_file:
+            objects = in_file.read().splitlines()
+            for obj in objects:
+                info = obj.split()
+                self.Canvas.create_line((info[0], info[1], info[2], info[3]), fill = info[4])
+                
     def create(self):
-        self.Canvas = Paint(self, foreground="midnightblue")
-        self.Canvas.grid(row=0, column=0, rowspan=3, sticky=N+E+S+W)
-        self.AskColor = Button(self, text="Pick color", command=self.askcolor)
-        self.AskColor.grid(row=0, column=1, sticky=N+W)
-        self.ShowColor = Label(self, textvariable=self.Canvas.foreground, foreground="midnightblue")
-        self.ShowColor.grid(row=1, column=1, sticky=N+W+E)
-        self.Quit = Button(self, text="Quit", command=self.quit)
-        self.Quit.grid(row=2, column=1, sticky=N+W)
+        self.Canvas = Paint(self, foreground="midnightblue", bg="midnightblue")
+        self.Canvas.grid(row=0, column=0, rowspan=2, sticky=N+E+S+W)
+        self.Canvas.create_line(0, 0, 100, 300, fill='white')
+        # second canvas
+        self.CanvasCopy = Canvas(bg="pink")
+        self.CanvasCopy.grid(row=2, column=0, rowspan=2, sticky=N+E+S+W)
+        for line in self.Canvas.find_all():
+            self.CanvasCopy.create_line(self.Canvas.coords(line),fill=self.Canvas.itemcget(line, "fill"))
+        # frame containing controls
+        frame = Frame(self)
+        frame.grid(row=0, column=1, rowspan=3, columnspan=3, sticky=N+E+S+W)
+
+        self.AskColor = Button(frame, text="Pick color", command=self.askcolor)
+        self.AskColor.grid(row=0, column=0)
+        
+        self.ShowColor = Label(frame, textvariable=self.Canvas.foreground, fg="midnightblue")
+        self.ShowColor.grid(row=1, column=0)
+        
+        self.Quit = Button(frame, text="Quit", command=self.quit)
+        self.Quit.grid(row=2, column=0)
+
+        self.Write = Button(frame, text = "Write", command = self.write)
+        self.Write.grid(row = 4, column = 0)
 
 app = MyApp(Title="Canvas Example")
 app.mainloop()
