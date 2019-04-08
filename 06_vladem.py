@@ -66,7 +66,7 @@ class MyApp(App):
         self.Canvas.grid(row=0, column=0, rowspan=3, sticky=N+E+S+W)
         self.AskColor = Button(self, text="Pick color", command=self.askcolor)
         self.AskColor.grid(row=0, column=1, sticky=N+W)
-        self.ShowColor = Label(self, textvariable=self.Canvas.foreground)
+        self.ShowColor = Label(self, textvariable=self.Canvas.foreground, foreground="midnightblue")
         self.ShowColor.grid(row=1, column=1, sticky=N+W+E)
         self.Quit = Button(self, text="Quit", command=self.quit)
         self.Quit.grid(row=2, column=1, sticky=N+W)
