@@ -70,6 +70,10 @@ class MyApp(App):
         for line in CanvasFrom.find_all():
             CanvasTo.create_line(CanvasFrom.coords(line),fill=CanvasFrom.itemcget(line, "fill"))
 
+    def clear(self):
+        self.CanvasLeft.delete("all")
+        self.CanvasRight.delete("all")
+
     def create(self):
         self.CanvasLeft = Paint(self, foreground="midnightblue")
         self.CanvasLeft.grid(row=0, column=0, rowspan=3, sticky=N+E+S+W)
@@ -86,14 +90,17 @@ class MyApp(App):
         self.Control.ShowColor = Label(self.Control, textvariable=self.CanvasLeft.foreground, bg="midnightblue", fg="white")
         self.Control.ShowColor.grid(row=1, column=0, sticky=W+E)
 
+        self.Control.Clear = Button(self.Control, text="Clear", command=lambda:self.clear())
+        self.Control.Clear.grid(row=2, column=0, sticky=W+E)
+
         self.Control.CopyLeftToRight = Button(self.Control, text="Copy ->", command=lambda:self.copy(self.CanvasLeft, self.CanvasRight))
-        self.Control.CopyLeftToRight.grid(row=2, column=0, sticky=W+E)
+        self.Control.CopyLeftToRight.grid(row=3, column=0, sticky=W+E)
 
         self.Control.CopyRightToLeft = Button(self.Control, text="<- Copy", command=lambda:self.copy(self.CanvasRight, self.CanvasLeft))
-        self.Control.CopyRightToLeft.grid(row=3, column=0, sticky=W+E)
+        self.Control.CopyRightToLeft.grid(row=4, column=0, sticky=W+E)
 
         self.Control.Quit = Button(self.Control, text="Quit", command=self.quit)
-        self.Control.Quit.grid(row=4, column=0, sticky=W+E)
+        self.Control.Quit.grid(row=5, column=0, sticky=W+E)
 
 app = MyApp(Title="Canvas Example")
 app.mainloop()
