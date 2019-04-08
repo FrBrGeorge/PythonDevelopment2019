@@ -72,7 +72,6 @@ class Painter(Frame):
                 line = line.strip()
                 cords, col = line.split('::')
                 self.Canvas.create_line( eval(cords), fill = col)
-    
 
     def create(self):
         self.Canvas = MyCanvas(self, foreground="midnightblue")
@@ -134,6 +133,25 @@ class MyCanvas(Canvas):
         self.cursor = None
         #print(self.find_all())
 
+    def rightmousedown(self, event):
+        '''Store mousedown coords'''
+        self.item = self.find_closest(event.x, event.y)
+        self.m_x, self.m_y = event.x, event.y
+        # print(f'{self.coords(item)}::{self.itemcget(item, "fill")}\n')
+
+    def rightmousemove(self, event):
+        if self.item:
+            dx = event.x - self.m_x
+            dy = event.y - self.m_y
+            coords = self.coords(self.item)
+            self.coords(self.item, coords[0] + dx, coords[1] + dy,  coords[2] + dx, coords[3] + dy )
+            self.m_x, self.m_y = event.x, event.y
+
+
+
+    def rightmouseup(self, event):
+        self.item = None
+
     def __init__(self, master=None, *ap, foreground="black", **an):
         self.foreground = StringVar()
         self.foreground.set(foreground)
@@ -141,6 +159,10 @@ class MyCanvas(Canvas):
         self.bind("<Button-1>", self.mousedown)
         self.bind("<B1-Motion>", self.mousemove)
         self.bind("<ButtonRelease-1>", self.mouseup)
+
+        self.bind("<Button-3>", self.rightmousedown)
+        self.bind("<B3-Motion>", self.rightmousemove)
+        self.bind("<ButtonRelease-3>", self.rightmouseup)
     
 
 app = App(Title="Canvas Example")
