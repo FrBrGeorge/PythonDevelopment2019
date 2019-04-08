@@ -6,6 +6,7 @@
 from tkinter import *
 from tkinter import colorchooser
 from tkinter import filedialog
+from random import *
 
 class App(Frame):
     '''Base framed application class'''
@@ -49,6 +50,18 @@ class Paint(Canvas):
         self.cursor = None
         #print(self.find_all())
 
+    def select(self, event):
+        self.x1, self.y1 = event.x, event.y
+        self.item = self.find_closest(event.x, event.y)[0]
+
+    def linemove(self, event):
+        self.move(self.item, event.x - self.x1, event.y - self.y1)
+        self.x1 = event.x
+        self.y1 = event.y
+
+    def up(self, event):
+        return
+
     def __init__(self, master=None, *ap, foreground="black", **an):
         self.foreground = StringVar()
         self.foreground.set(foreground)
@@ -56,6 +69,9 @@ class Paint(Canvas):
         self.bind("<Button-1>", self.mousedown)
         self.bind("<B1-Motion>", self.mousemove)
         self.bind("<ButtonRelease-1>", self.mouseup)
+        self.bind("<Button-3>", self.select)
+        self.bind("<B3-Motion>", self.linemove)
+        self.bind("<ButtonRelease-3>", self.up)
 
 class MyApp(App):
     def askcolor(self):
@@ -64,9 +80,15 @@ class MyApp(App):
         self.ShowColor.configure(fg = self.Canvas.foreground.get())
         self.Canvas.configure(bg = self.Canvas.foreground.get())
 
-    def clearCanvas(self):
+    def clearBoth(self):
         self.Canvas.delete("all")
         self.CanvasCopy.delete("all")
+
+    def clearCanvas(self):
+        self.Canvas.delete("all")
+    
+    def addLine(self):
+        self.Canvas.create_line(0, 0, randint(0,300), randint(0,300), fill='white')
 
     def write(self):
         file = filedialog.asksaveasfilename()
@@ -81,16 +103,21 @@ class MyApp(App):
             for obj in objects:
                 info = obj.split()
                 self.Canvas.create_line((info[0], info[1], info[2], info[3]), fill = info[4])
-                
+
+    def copy(self):
+        for line in self.Canvas.find_all():
+            self.CanvasCopy.create_line(self.Canvas.coords(line),fill=self.Canvas.itemcget(line, "fill"))
+        
+        self.clearCanvas()
+
+
     def create(self):
         self.Canvas = Paint(self, foreground="midnightblue", bg="midnightblue")
         self.Canvas.grid(row=0, column=0, rowspan=2, sticky=N+E+S+W)
-        self.Canvas.create_line(0, 0, 100, 300, fill='white')
         # second canvas
         self.CanvasCopy = Canvas(bg="pink")
         self.CanvasCopy.grid(row=2, column=0, rowspan=2, sticky=N+E+S+W)
-        for line in self.Canvas.find_all():
-            self.CanvasCopy.create_line(self.Canvas.coords(line),fill=self.Canvas.itemcget(line, "fill"))
+        
         # frame containing controls
         frame = Frame(self)
         frame.grid(row=0, column=1, rowspan=3, columnspan=3, sticky=N+E+S+W)
@@ -104,7 +131,7 @@ class MyApp(App):
         self.Quit = Button(frame, text="Quit", command=self.quit)
         self.Quit.grid(row=2, column=0)
 
-        self.Clear = Button(frame, text = "Clear", command = self.clearCanvas)
+        self.Clear = Button(frame, text = "Clear", command = self.clearBoth)
         self.Clear.grid(row = 4, column = 0)
 
         self.Read = Button(frame, text = "Read", command = self.read)
@@ -112,6 +139,12 @@ class MyApp(App):
 
         self.Write = Button(frame, text = "Write", command = self.write)
         self.Write.grid(row = 6, column = 0)
+
+        self.Line = Button(frame, text = "Add line", command = self.addLine)
+        self.Line.grid(row = 7, column = 0)
+
+        self.Copy = Button(frame, text = "Move lines down", command = self.copy)
+        self.Copy.grid(row = 8, column = 0)
 
 app = MyApp(Title="Canvas Example")
 app.mainloop()
