@@ -5,6 +5,7 @@
 
 from tkinter import *
 from tkinter import colorchooser
+from tkinter import filedialog
 
 def adjust(widg, row_val = 1,col_val = 1):
     for i in range(widg.size()[0]):
@@ -13,48 +14,109 @@ def adjust(widg, row_val = 1,col_val = 1):
         widg.rowconfigure(i, weight=row_val)
 
 
-
 class App(Frame):
+    """docstring for App"""
+    def __init__(self, master = None, Title="Application"):
+        Frame.__init__(self, master=None)
+        self.master.rowconfigure(0, weight=1)
+        self.master.columnconfigure(0, weight=1)
+        self.master.title(Title)
+        self.grid(sticky=N+E+S+W)
+
+        self.painter1 = Painter(master = self)
+        self.painter1.grid(row = 0, column = 0)
+
+        self.painter2 = Painter(master = self)
+        self.painter2.grid(row = 0, column = 1)
+
+        adjust(self)        
+
+
+class Painter(Frame):
     '''Base framed application class'''
     def __init__(self, master=None, Title="Application"):
         Frame.__init__(self, master)
         self.master.rowconfigure(0, weight=1)
         self.master.columnconfigure(0, weight=1)
-        self.master.title(Title)
+        self['borderwidth'] = 2
+        self['relief'] = 'ridge'
+        
+        if not master:
+            self.master.title(Title)
         self.grid(sticky=N+E+S+W)
         self.create()
         
 
     def askcolor(self):
-        self.canvas1.foreground.set(colorchooser.askcolor()[1])
+        col = colorchooser.askcolor()[1]
+        if col:
+            self.Canvas.foreground.set(col)
+            self.ShowColor['foreground'] = col
+
+   
+    def clear(self):
+        for item in self.Canvas.find_all():
+            self.Canvas.delete(item)
+
+    def save(self):
+        filename = filedialog.asksaveasfilename()
+        with open(filename, 'w') as f:
+            for item in self.Canvas.find_all():
+                f.write(f'{self.Canvas.coords(item)}::{self.Canvas.itemcget(item, "fill")}\n')
+
+
+    def load(self):
+        filename =  filedialog.askopenfilename() 
+        with open(filename, 'r') as f:
+            for line in f:
+                line = line.strip()
+                cords, col = line.split('::')
+                self.Canvas.create_line( eval(cords), fill = col)
     
 
     def create(self):
-        self.canvas1 = Paint(self, foreground="midnightblue")
-        self.canvas1.grid(row=0, column=0, sticky=N+E+S+W)
+        self.Canvas = MyCanvas(self, foreground="midnightblue")
+        self.Canvas.grid(row=0, column=0, sticky=N+E+S+W)
 
-        self.control = Frame(self, bg = 'gray')
+        self.control = Frame(self)
         control = self.control
-        control.grid(row=0, column=1, sticky=N+E+S+W)
+        control.grid(row=1, column=0, sticky=N+E+S+W)
+
+        self.Save = Button(control, text="Save", command=self.save)
+        self.Save.grid(row=0, column=0, sticky=N+E+W)
+
+        self.Load = Button(control, text="Load", command=self.load)
+        self.Load.grid(row=0, column=1, sticky=N+E+W)
+
+        self.Clear = Button(control, text = 'Clear', command = self.clear)
+        self.Clear.grid(row=0, column=2, sticky=N+E+W)
 
         self.AskColor = Button(control, text="Color", command=self.askcolor)
-        self.AskColor.grid(row=0, column=0, sticky=N+E+W, pady=30)
+        self.AskColor.grid(row=0, column=3, sticky=N+E+W)
 
-        self.ShowColor = Label(control, textvariable=self.canvas1.foreground)
-        self.ShowColor.grid(row=1, column=0, sticky=N+E+W, pady=30)
+        self.ShowColor = Label(control, textvariable=self.Canvas.foreground, foreground = "midnightblue")
+        self.ShowColor.grid(row=0, column=4, sticky=N+E+W)
 
-        self.Quit = Button(control, text="Quit", command=self.quit)
-        self.Quit.grid(row=2, column=0, sticky=N+E+W, pady=30)
+        # tkinter.filedialog
 
-        adjust(control, row_val = 0)
+
+        # self.Quit = Button(control, text="Quit", command=self.quit)
+        # self.Quit.grid(row=0, column=2, sticky=N+E+W)
+
+        # self.Swap = Button(control, text = 'Swap', command = self.swap)
+        # self.Swap.grid(row=0, column=3, sticky=N+E+W)
+
+
+
+        adjust(control, col_val = 0)
 
         self.columnconfigure(0, weight = 1)
-        self.columnconfigure(1, weight = 0)
         self.rowconfigure(0, weight = 1)
+        self.rowconfigure(1, weight = 0)
         
 
            
-class Paint(Canvas):
+class MyCanvas(Canvas):
     '''Canvas with simple drawing'''
     def mousedown(self, event):
         '''Store mousedown coords'''
@@ -83,3 +145,5 @@ class Paint(Canvas):
 
 app = App(Title="Canvas Example")
 app.mainloop()
+# for item in app.Canvas.find_all():
+#     print(*app.Canvas.coords(item), app.Canvas.itemcget(item, "fill"))
