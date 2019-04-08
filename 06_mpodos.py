@@ -58,7 +58,13 @@ class Paint(Canvas):
 
 class MyApp(App):
     def askcolor(self):
-        self.Canvas.foreground.set(colorchooser.askcolor()[1])
+        color = colorchooser.askcolor()
+        self.Canvas.foreground.set(color[1])
+        self.Control.ShowColor.configure(bg=color[1])
+        if 1 - (0.299 * color[0][0] + 0.587 * color[0][1] + 0.114 * color[0][2]) / 255 < 0.5:
+            self.Control.ShowColor.configure(fg="black")
+        else:
+            self.Control.ShowColor.configure(fg="white")
 
     def create(self):
         self.Canvas = Paint(self, foreground="midnightblue")
@@ -70,7 +76,7 @@ class MyApp(App):
         self.Control.AskColor = Button(self.Control, text="Color", command=self.askcolor)
         self.Control.AskColor.grid(row=0, column=0, sticky=W+E)
 
-        self.Control.ShowColor = Label(self.Control, textvariable=self.Canvas.foreground)
+        self.Control.ShowColor = Label(self.Control, textvariable=self.Canvas.foreground, bg="midnightblue", fg="white")
         self.Control.ShowColor.grid(row=1, column=0, sticky=W+E)
 
         self.Control.Quit = Button(self.Control, text="Quit", command=self.quit)
