@@ -5,6 +5,7 @@
 
 from tkinter import *
 from tkinter import colorchooser
+from tkinter import filedialog
 
 class App(Frame):
     '''Base framed application class'''
@@ -58,20 +59,34 @@ class Paint(Canvas):
 
 class MyApp(App):
     def askcolor(self):
-        self.Canvas.foreground.set(colorchooser.askcolor()[1])
+        self.Canvas1.foreground.set(colorchooser.askcolor()[1])
+        self.Canvas2.foreground.set(colorchooser.askcolor()[1])
+        self.ShowColor.config(fg = colorchooser.askcolor()[1])
 
     def create(self):
-        self.Canvas = Paint(self, foreground="midnightblue")
-        self.Canvas.grid(row=0, column=0, rowspan=3, sticky=N+E+S+W)
+        self.Canvas1 = Paint(self, foreground="midnightblue")
+        self.Canvas1.grid(row=0, column=0, rowspan=3, sticky=N+E+S+W)
+
+        self.Canvas2 = Paint(self, foreground="midnightblue")
+        self.Canvas2.grid(row=0, column=0, rowspan=3, sticky=N+E+S+W)
+
+        self.Canvas1.anotherOne = self.Canvas2
+        self.Canvas2.anotherOne = self.Canvas1
+
+        self.Frame = Frame(self)
+        self.Frame.grid(row = 0, column = 1, sticky = N+W)
+
         self.AskColor = Button(self, text="Color", command=self.askcolor)
         self.AskColor.grid(row=0, column=1, sticky=N+W)
-        self.ShowColor = Label(self, textvariable=self.Canvas.foreground)
-        self.ShowColor.grid(row=1, column=1, sticky=N+W+E)
+
+        self.ShowColor = Label(self, textvariable=self.Canvas1.foreground, fg = self.Canvas1.foreground.get())
+        self.ShowColor.grid(row=1, column=1, sticky=N+W)
+
         self.Quit = Button(self, text="Quit", command=self.quit)
         self.Quit.grid(row=2, column=1, sticky=N+W)
 
-app = MyApp(Title="Canvas Example")
+app = MyApp(Title="task_06 Bikbulatov")
 app.mainloop()
-for item in app.Canvas.find_all():
-    print(*app.Canvas.coords(item), app.Canvas.itemcget(item, "fill"))
+for item in app.Canvas1.find_all():
+    print(*app.Canvas1.coords(item), app.Canvas1.itemcget(item, "fill"))
 
