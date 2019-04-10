@@ -18,10 +18,27 @@ root.columnconfigure(1, weight=1)
 def FaceSelect(*args):
     I["image"]=Images[L.selection_get()]
 
-os.chdir(os.getcwd())
-Names = [file[:-4] for file in glob.glob("*.png")]
+def NamesListbox():
+    for name in Names_images:
+        try:
+            with open(name + '.txt', 'r') as f:
+                text = f.read()
+                Names_txt.remove(name)
+        except:
+            print('No file .txt for ' + name + '.png')
+            text = name
+        Images[text] = PhotoImage(file=name+".png")
+        Names.append(text)
+    for name in Names_txt:
+        print('No file .png for ' + name + 'txt')
 
-Images = {k:PhotoImage(file=k+".png") for k in Names}
+os.chdir(os.getcwd())
+Names_images = [file[:-4] for file in glob.glob("*.png")]
+Names_txt = [file[:-4] for file in glob.glob("*.txt")]
+
+Images = {}
+Names = []
+NamesListbox()
 
 Name = StringVar(value=tuple(Names))
 
