@@ -59,6 +59,17 @@ class Paint(Canvas):
         self.bind("<B1-Motion>", self.mousemove)
         self.bind("<ButtonRelease-1>", self.mouseup)
 
+    def draw_lines(self, lines_list):
+        for line in lines_list:
+            self.create_line(line[:4], fill=line[4])
+
+    @property
+    def lines(self):
+        return [
+            self.coords(item) + [self.itemcget(item, "fill")]
+            for item in self.find_all()
+        ]
+
 
 class MyApp(App):
     def askcolor(self):
@@ -88,13 +99,20 @@ class MyApp(App):
         self.ShowColor.grid(row=1, column=0, sticky=N + W + E)
         self.Quit = Button(self.frame, text="Quit", command=self.quit)
         self.Quit.grid(row=2, column=0, sticky=N + W)
-        self.Copy12 = Button(self.frame, text="Copy from upper canvas to lower canvas")
+        self.Copy12 = Button(self.frame, text="Copy from upper canvas to lower canvas", command=self.copy_lines12)
         self.Copy12.grid(row=3, column=0, sticky=N + W)
-        self.Copy21 = Button(self.frame, text="Copy from lower canvas to upper canvas")
+        self.Copy21 = Button(self.frame, text="Copy from lower canvas to upper canvas", command=self.copy_lines21)
         self.Copy21.grid(row=4, column=0, sticky=N + W)
+
+    def copy_lines12(self):
+        lines1 = self.Canvas1.lines
+        self.Canvas2.draw_lines(lines1)
+
+    def copy_lines21(self):
+        lines2 = self.Canvas2.lines
+        self.Canvas1.draw_lines(lines2)
 
 
 app = MyApp(Title="Canvas Example")
 app.mainloop()
-for item in app.Canvas1.find_all():
-    print(*app.Canvas1.coords(item), app.Canvas1.itemcget(item, "fill"))
+print(*app.Canvas1.lines, sep="\n")
