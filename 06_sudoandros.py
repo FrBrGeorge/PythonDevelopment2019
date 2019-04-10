@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from tkinter import *
-from tkinter import colorchooser
+from tkinter import colorchooser, filedialog
 
 
 class App(Frame):
@@ -63,6 +63,12 @@ class Paint(Canvas):
         for line in lines_list:
             self.create_line(line[:4], fill=line[4])
 
+    def save(self, path):
+        with open(path, "w") as file:
+            for line in self.lines:
+                to_write = [str(elem) for elem in line]
+                file.write(" ".join(to_write) + "\n")
+
     @property
     def lines(self):
         return [
@@ -99,14 +105,30 @@ class MyApp(App):
         self.ShowColor.grid(row=1, column=0, sticky=N + W + E)
         self.Quit = Button(self.frame, text="Quit", command=self.quit)
         self.Quit.grid(row=2, column=0, sticky=N + W)
-        self.Copy12 = Button(self.frame, text="Copy from upper canvas to lower canvas", command=self.copy_lines12)
+        self.Copy12 = Button(
+            self.frame,
+            text="Copy from upper canvas to lower canvas",
+            command=self.copy_lines12,
+        )
         self.Copy12.grid(row=3, column=0, sticky=N + W)
-        self.Copy21 = Button(self.frame, text="Copy from lower canvas to upper canvas", command=self.copy_lines21)
+        self.Copy21 = Button(
+            self.frame,
+            text="Copy from lower canvas to upper canvas",
+            command=self.copy_lines21,
+        )
         self.Copy21.grid(row=4, column=0, sticky=N + W)
-        self.Delete = Button(self.frame, text="Clear upper canvas", command=self.clear_canvas1)
+        self.Delete = Button(
+            self.frame, text="Clear upper canvas", command=self.clear_canvas1
+        )
         self.Delete.grid(row=5, column=0, sticky=N + W)
-        self.Delete = Button(self.frame, text="Clear lower canvas", command=self.clear_canvas2)
+        self.Delete = Button(
+            self.frame, text="Clear lower canvas", command=self.clear_canvas2
+        )
         self.Delete.grid(row=6, column=0, sticky=N + W)
+        self.Save = Button(
+            self.frame, text="Save upper canvas", command=self.save_canvas
+        )
+        self.Save.grid(row=7, column=0, sticky=N + W)
 
     def copy_lines12(self):
         lines1 = self.Canvas1.lines
@@ -121,6 +143,15 @@ class MyApp(App):
 
     def clear_canvas2(self):
         self.Canvas2.delete(ALL)
+
+    def save_canvas(self):
+        path = filedialog.asksaveasfilename(
+            initialdir="./",
+            title="Select file",
+            filetypes=(("text files", "*.txt"), ("all files", "*.*")),
+        )
+        self.Canvas1.save(path)
+
 
 app = MyApp(Title="Canvas Example")
 app.mainloop()
