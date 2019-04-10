@@ -103,6 +103,10 @@ class MyApp(App):
         self.Copy12.grid(row=3, column=0, sticky=N + W)
         self.Copy21 = Button(self.frame, text="Copy from lower canvas to upper canvas", command=self.copy_lines21)
         self.Copy21.grid(row=4, column=0, sticky=N + W)
+        self.Delete = Button(self.frame, text="Clear upper canvas", command=self.clear_canvas1)
+        self.Delete.grid(row=5, column=0, sticky=N + W)
+        self.Delete = Button(self.frame, text="Clear lower canvas", command=self.clear_canvas2)
+        self.Delete.grid(row=6, column=0, sticky=N + W)
 
     def copy_lines12(self):
         lines1 = self.Canvas1.lines
@@ -112,6 +116,11 @@ class MyApp(App):
         lines2 = self.Canvas2.lines
         self.Canvas1.draw_lines(lines2)
 
+    def clear_canvas1(self):
+        self.Canvas1.delete(ALL)
+
+    def clear_canvas2(self):
+        self.Canvas2.delete(ALL)
 
 app = MyApp(Title="Canvas Example")
 app.mainloop()
