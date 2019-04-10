@@ -187,10 +187,10 @@ class Actions(Frame):
 class MyApp(App):
 
     def create(self):
-        self.Canvas1 = Paint(self, foreground="lightgreen")
+        self.Canvas1 = Paint(self, foreground="lightyellow")
         self.Canvas1.grid(row=0, column=0, rowspan=3, sticky=N+E+S+W)
 
-        self.Canvas2 = Paint(self, foreground="lightgreen")
+        self.Canvas2 = Paint(self, foreground="lightyellow")
         self.Canvas2.grid(row=0, column=0, rowspan=3, sticky=N+E+S+W)
 
         act_buttons = Actions(canvas1=self.Canvas1, canvas2=self.Canvas2)
