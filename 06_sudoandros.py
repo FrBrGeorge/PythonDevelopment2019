@@ -69,6 +69,16 @@ class Paint(Canvas):
                 to_write = [str(elem) for elem in line]
                 file.write(" ".join(to_write) + "\n")
 
+    def load(self, path):
+        lines = []
+        with open(path, "r") as file:
+            for line_string in file:
+                line = [float(elem) for elem in line_string.split()[:4]]
+                line.append(" ".join(line_string.split()[4:]))
+                lines.append(line)
+        self.delete(ALL)
+        self.draw_lines(lines)
+
     @property
     def lines(self):
         return [
@@ -129,6 +139,10 @@ class MyApp(App):
             self.frame, text="Save upper canvas", command=self.save_canvas
         )
         self.Save.grid(row=7, column=0, sticky=N + W)
+        self.Load = Button(
+            self.frame, text="Load upper canvas from file", command=self.load_canvas
+        )
+        self.Load.grid(row=8, column=0, sticky=N + W)
 
     def copy_lines12(self):
         lines1 = self.Canvas1.lines
@@ -151,6 +165,14 @@ class MyApp(App):
             filetypes=(("text files", "*.txt"), ("all files", "*.*")),
         )
         self.Canvas1.save(path)
+
+    def load_canvas(self):
+        path = filedialog.askopenfilename(
+            initialdir="./",
+            title="Select file",
+            filetypes=(("text files", "*.txt"), ("all files", "*.*")),
+        )
+        self.Canvas1.load(path)
 
 
 app = MyApp(Title="Canvas Example")
