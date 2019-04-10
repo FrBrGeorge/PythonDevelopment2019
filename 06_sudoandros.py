@@ -3,47 +3,53 @@
 from tkinter import *
 from tkinter import colorchooser
 
+
 class App(Frame):
-    '''Base framed application class'''
+    """Base framed application class"""
+
     def __init__(self, master=None, Title="Application"):
         Frame.__init__(self, master)
         self.master.rowconfigure(0, weight=1)
         self.master.columnconfigure(0, weight=1)
         self.master.title(Title)
-        self.grid(sticky=N+E+S+W)
+        self.grid(sticky=N + E + S + W)
         self.create()
         self.adjust()
 
     def create(self):
-        '''Create all the widgets'''
-        self.bQuit = Button(self, text='Quit', command=self.quit)
+        """Create all the widgets"""
+        self.bQuit = Button(self, text="Quit", command=self.quit)
         self.bQuit.grid()
 
     def adjust(self):
-        '''Adjust grid sise/properties'''
+        """Adjust grid sise/properties"""
         # TODO Smart detecting resizeable/still cells
         for i in range(self.size()[0]):
             self.columnconfigure(i, weight=12)
         for i in range(self.size()[1]):
             self.rowconfigure(i, weight=12)
 
+
 class Paint(Canvas):
-    '''Canvas with simple drawing'''
+    """Canvas with simple drawing"""
+
     def mousedown(self, event):
-        '''Store mousedown coords'''
+        """Store mousedown coords"""
         self.x0, self.y0 = event.x, event.y
         self.cursor = None
 
     def mousemove(self, event):
-        '''Do sometheing when drag a mouse'''
+        """Do sometheing when drag a mouse"""
         if self.cursor:
             self.delete(self.cursor)
-        self.cursor = self.create_line((self.x0, self.y0, event.x, event.y), fill=self.foreground.get())
+        self.cursor = self.create_line(
+            (self.x0, self.y0, event.x, event.y), fill=self.foreground.get()
+        )
 
     def mouseup(self, event):
-        '''Dragging is done'''
+        """Dragging is done"""
         self.cursor = None
-        #print(self.find_all())
+        # print(self.find_all())
 
     def __init__(self, master=None, *ap, foreground="black", **an):
         self.foreground = StringVar()
@@ -53,25 +59,42 @@ class Paint(Canvas):
         self.bind("<B1-Motion>", self.mousemove)
         self.bind("<ButtonRelease-1>", self.mouseup)
 
+
 class MyApp(App):
     def askcolor(self):
         color = colorchooser.askcolor()[1]
-        self.Canvas.foreground.set(color)
+        self.Canvas1.foreground.set(color)
+        self.Canvas2.foreground.set(color)
         self.ShowColor["bg"] = color
 
     def create(self):
-        self.Canvas = Paint(self, foreground="midnightblue")
-        self.Canvas.grid(row=0, column=0, rowspan=3, sticky=N+S+W)
+        self._create_canvases()
+        self._create_buttons()
+
+    def _create_canvases(self):
+        self.Canvas1 = Paint(self, foreground="midnightblue")
+        self.Canvas1.grid(row=0, column=0, rowspan=3, sticky=N + S + W)
+        self.Canvas2 = Paint(self, foreground="midnightblue")
+        self.Canvas2.grid(row=3, column=0, rowspan=3, sticky=N + S + W)
+
+    def _create_buttons(self):
         self.frame = Frame(self)
-        self.frame.grid(row=0, column=1, sticky=N+W)
+        self.frame.grid(row=0, column=1, sticky=N + W)
         self.AskColor = Button(self.frame, text="Color", command=self.askcolor)
-        self.AskColor.grid(row=0, column=0, sticky=N+W)
-        self.ShowColor = Label(self.frame, textvariable=self.Canvas.foreground, bg="midnightblue")
-        self.ShowColor.grid(row=1, column=0, sticky=N+W+E)
+        self.AskColor.grid(row=0, column=0, sticky=N + W)
+        self.ShowColor = Label(
+            self.frame, textvariable=self.Canvas1.foreground, bg="midnightblue"
+        )
+        self.ShowColor.grid(row=1, column=0, sticky=N + W + E)
         self.Quit = Button(self.frame, text="Quit", command=self.quit)
-        self.Quit.grid(row=2, column=0, sticky=N+W)
+        self.Quit.grid(row=2, column=0, sticky=N + W)
+        self.Copy12 = Button(self.frame, text="Copy from upper canvas to lower canvas")
+        self.Copy12.grid(row=3, column=0, sticky=N + W)
+        self.Copy21 = Button(self.frame, text="Copy from lower canvas to upper canvas")
+        self.Copy21.grid(row=4, column=0, sticky=N + W)
+
 
 app = MyApp(Title="Canvas Example")
 app.mainloop()
-for item in app.Canvas.find_all():
-    print(*app.Canvas.coords(item), app.Canvas.itemcget(item, "fill"))
+for item in app.Canvas1.find_all():
+    print(*app.Canvas1.coords(item), app.Canvas1.itemcget(item, "fill"))
