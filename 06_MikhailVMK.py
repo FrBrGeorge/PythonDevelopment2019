@@ -48,26 +48,15 @@ class WorkSpace(App):
                             column=self._canvasToolPanelCoords.column,
                             rowspan=self._canvasToolPanelCoords.rowspan,
                             columnspan=self._canvasToolPanelCoords.columnspan,
-                            sticky=N+E+S+W)        
+                            sticky=N+E+S+W)  
+
         self._canvasPanelCoords = PanelCoords(row=0, column=0, rowspan = 3, columnspan = 1)
-        # self._canvasPanel = CanvasPanel(self, self._canvasToolPanel)
-        self._canvasPanel = Canvas(self)
+        self._canvasPanel = CanvasPanel(self)
         self._canvasPanel.grid(row=self._canvasPanelCoords.row,
                             column=self._canvasPanelCoords.column,
                             rowspan=self._canvasPanelCoords.rowspan,
                             columnspan=self._canvasPanelCoords.columnspan,
                             sticky=N+E+S+W)
-        # self._canvasPanel['borderwidth'] = 2
-        # self._canvasPanel['relief'] = 'ridge'
-        # self._canvasPanel1Coords = PanelCoords(row=4, column=0, rowspan = 3, columnspan = 1)
-        # self._canvasPanel1 = CanvasPanel(self, self._canvasToolPanel)
-        # self._canvasPanel1.grid(row=self._canvasPanel1Coords.row,
-        #                     column=self._canvasPanel1Coords.column,
-        #                     rowspan=self._canvasPanel1Coords.rowspan,
-        #                     columnspan=self._canvasPanel1Coords.columnspan,
-        #                     sticky=N+E+S+W)
-        # self._canvasPanel1['borderwidth'] = 2
-        # self._canvasPanel1['relief'] = 'ridge'
         self._createBindings()
     def _adjust(self):
         self.rowconfigure(0, weight=12)
@@ -86,7 +75,6 @@ class WorkSpace(App):
                                 ForwardFunction(self._canvasPanel,
                                                 handler = self._canvasToolPanel,
                                                 method ='terminateDraw'))   
-
 
     def printCanvasObjects(self):
         for item in self._canvasPanel.find_all():
