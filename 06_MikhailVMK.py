@@ -57,11 +57,26 @@ class WorkSpace(App):
                             rowspan=self._canvasPanelCoords.rowspan,
                             columnspan=self._canvasPanelCoords.columnspan,
                             sticky=N+E+S+W)
+        self._canvasPanel['relief'] = 'ridge'
+        self._canvasPanel['borderwidth'] = 2
+        
+        self._canvasPanel1Coords = PanelCoords(row=3, column=0, rowspan = 3, columnspan = 1)
+        self._canvasPanel1 = CanvasPanel(self)
+        self._canvasPanel1.grid(row=self._canvasPanel1Coords.row,
+                            column=self._canvasPanel1Coords.column,
+                            rowspan=self._canvasPanel1Coords.rowspan,
+                            columnspan=self._canvasPanel1Coords.columnspan,
+                            sticky=N+E+S+W)
+        self._canvasPanel1['relief'] = 'ridge'
+        self._canvasPanel1['borderwidth'] = 2
+        
         self._createBindings()
+   
     def _adjust(self):
         self.rowconfigure(0, weight=12)
         self.columnconfigure(0, weight=12)
         self.columnconfigure(1, weight=0)
+   
     def _createBindings(self):
         self._canvasPanel.bind('<Button-1>',
                                 ForwardFunction(self._canvasPanel,
@@ -76,11 +91,31 @@ class WorkSpace(App):
                                                 handler = self._canvasToolPanel,
                                                 method ='terminateDraw'))   
 
+        self._canvasPanel.bind('<Button-3>', self._canvasPanel._get_item)
+        self._canvasPanel.bind('<B3-Motion>', self._canvasPanel._drag_item)
+        self._canvasPanel.bind('<ButtonRelease-3>', self._canvasPanel._put_item)
+
+        self._canvasPanel1.bind('<Button-1>',
+                                ForwardFunction(self._canvasPanel1,
+                                                handler = self._canvasToolPanel,
+                                                method ='initiateDraw'))
+        self._canvasPanel1.bind('<B1-Motion>',
+                                ForwardFunction(self._canvasPanel1,
+                                                handler = self._canvasToolPanel,
+                                                method ='progressDraw'))
+        self._canvasPanel1.bind('<ButtonRelease-1>',
+                                ForwardFunction(self._canvasPanel1,
+                                                handler = self._canvasToolPanel,
+                                                method ='terminateDraw'))   
+
+        self._canvasPanel1.bind('<Button-3>', self._canvasPanel1._get_item)
+        self._canvasPanel1.bind('<B3-Motion>', self._canvasPanel1._drag_item)
+        self._canvasPanel1.bind('<ButtonRelease-3>', self._canvasPanel1._put_item)
+
     def printCanvasObjects(self):
         for item in self._canvasPanel.find_all():
             # print(self._canvasPanel.itemconfigure(item))
             print(*self._canvasPanel.coords(item))
-
 
 app = WorkSpace(Title="Canvas Example")
 app.mainloop()
