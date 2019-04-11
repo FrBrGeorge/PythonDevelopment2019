@@ -51,6 +51,17 @@ class Paint(Canvas):
         self.cursor = None
         # print(self.find_all())
 
+    def rightmousedown(self, event):
+        self.x0, self.y0 = event.x, event.y
+        self.cursor_right = self.find_closest(event.x, event.y)
+
+    def rightmousemove(self, event):
+        self.move(self.cursor_right, event.x - self.x0, event.y - self.y0)
+        self.x0, self.y0 = event.x, event.y
+
+    def rightmouseup(self, event):
+        pass
+
     def __init__(self, master=None, *ap, foreground="black", **an):
         self.foreground = StringVar()
         self.foreground.set(foreground)
@@ -58,6 +69,9 @@ class Paint(Canvas):
         self.bind("<Button-1>", self.mousedown)
         self.bind("<B1-Motion>", self.mousemove)
         self.bind("<ButtonRelease-1>", self.mouseup)
+        self.bind("<Button-3>", self.rightmousedown)
+        self.bind("<B3-Motion>", self.rightmousemove)
+        self.bind("<ButtonRelease-3>", self.rightmouseup)
 
     def draw_lines(self, lines_list):
         for line in lines_list:
