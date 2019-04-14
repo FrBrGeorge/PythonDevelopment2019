@@ -5,8 +5,17 @@
 Пример объектной организации кода
 """
 
-from tkinter import *
-from tkinter import colorchooser
+from tkinter import (
+    Button,
+    Canvas,
+    Frame,
+    Label,
+    StringVar,
+    Tk,
+
+    colorchooser,
+)
+import tkinter
 
 
 class Paint(Canvas):
@@ -27,7 +36,7 @@ class Paint(Canvas):
 
     def mousemove(self, event):
         """Do sometheing when drag a mouse"""
-        if self.cursor:
+        if self.cursor is not None:
             self.delete(self.cursor)
         self.cursor = self.create_line((self.x0, self.y0, event.x, event.y), fill=self.foreground.get())
 
@@ -43,19 +52,19 @@ class Application(Frame):
         self.master.rowconfigure(0, weight=1)
         self.master.columnconfigure(0, weight=1)
         self.master.title(Title)
-        self.grid(sticky=N+E+S+W)
+        self.grid(sticky=tkinter.N+tkinter.E+tkinter.S+tkinter.W)
         self.create_widgets()
         self.adjust()
 
     def create_widgets(self):
         self.Canvas = Paint(self, foreground="midnightblue")
-        self.Canvas.grid(row=0, column=0, rowspan=3, sticky=N+E+S+W)
+        self.Canvas.grid(row=0, column=0, rowspan=3, sticky=tkinter.N+tkinter.E+tkinter.S+tkinter.W)
         self.AskColor = Button(self, text="Color", command=self.askcolor)
-        self.AskColor.grid(row=0, column=1, sticky=N+W)
+        self.AskColor.grid(row=0, column=1, sticky=tkinter.N+tkinter.W)
         self.ShowColor = Label(self, textvariable=self.Canvas.foreground)
-        self.ShowColor.grid(row=1, column=1, sticky=N+W+E)
+        self.ShowColor.grid(row=1, column=1, sticky=tkinter.N+tkinter.W+tkinter.E)
         self.Quit = Button(self, text="Quit", command=self.quit)
-        self.Quit.grid(row=2, column=1, sticky=N+W)
+        self.Quit.grid(row=2, column=1, sticky=tkinter.N+tkinter.W)
 
     def adjust(self):
         """Adjust grid size/properties"""
