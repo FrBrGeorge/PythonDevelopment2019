@@ -54,18 +54,38 @@ class Menu(Frame):
         self.create_widgets()
 
     def create_widgets(self):
-        self.ask_color = Button(self, text="Color", command=self.askcolor)
+        self.ask_color = Button(self, text="Color", command=self.ask_color)
         self.ask_color.grid(row=0, column=0, sticky=tkinter.N + tkinter.W + tkinter.E)
 
         # The longest color name as man page says http://www.tcl.tk/man/tcl8.5/TkCmd/colors.htm
-        self.show_color = Label(self, textvariable=self.paint_widget.foreground, width=len('light goldenrod yellow') + 3)
+        self.show_color = Label(
+            self,
+            textvariable=self.paint_widget.foreground,
+            width=len('light goldenrod yellow') + 3,
+        )
+        self.set_color(self.paint_widget.foreground.get())
         self.show_color.grid(row=1, column=0, sticky=tkinter.N + tkinter.W + tkinter.E)
 
         self.quit = Button(self, text="Quit", command=self.quit)
         self.quit.grid(row=2, column=0, sticky=tkinter.N + tkinter.W + tkinter.E)
 
-    def askcolor(self):
-        self.paint_widget.foreground.set(colorchooser.askcolor()[1])
+    def ask_color(self):
+        color = colorchooser.askcolor()[1]
+        self.paint_widget.foreground.set(color)
+        self.set_color(color)
+
+    def set_color(self, color):
+        self.show_color.configure(bg=color)
+        self.show_color.configure(fg=self.invert_color(color))
+
+    def invert_color(self, color):
+        if isinstance(color, str):
+            color = self.winfo_rgb(color)
+
+        inverted_color = [65535 - i for i in color]
+        print(inverted_color)
+        return f"#{inverted_color[0]:x}{inverted_color[1]:x}{inverted_color[2]:x}"
+
 
 
 class Application(Frame):
