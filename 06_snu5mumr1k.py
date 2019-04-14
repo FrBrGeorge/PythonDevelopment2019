@@ -45,7 +45,38 @@ class Paint(Canvas):
         self.cursor = None
 
 
+class Menu(Frame):
+    def __init__(self, paint_widget, master=None):
+        self.paint_widget = paint_widget
+
+        super().__init__(master=master)
+
+        self.create_widgets()
+
+    def create_widgets(self):
+        self.ask_color = Button(self, text="Color", command=self.askcolor)
+        self.ask_color.grid(row=0, column=0, sticky=tkinter.N + tkinter.W + tkinter.E)
+
+        # The longest color name as man page says http://www.tcl.tk/man/tcl8.5/TkCmd/colors.htm
+        self.show_color = Label(self, textvariable=self.paint_widget.foreground, width=len('light goldenrod yellow') + 3)
+        self.show_color.grid(row=1, column=0, sticky=tkinter.N + tkinter.W + tkinter.E)
+
+        self.quit = Button(self, text="Quit", command=self.quit)
+        self.quit.grid(row=2, column=0, sticky=tkinter.N + tkinter.W + tkinter.E)
+
+    def askcolor(self):
+        self.paint_widget.foreground.set(colorchooser.askcolor()[1])
+
+
 class Application(Frame):
+    class MenuCell:
+        row = 0
+        column = 0
+
+    class PaintCell:
+        row = 0
+        column = 1
+
     def __init__(self, master=None, Title="Application"):
         super().__init__(master=master)
 
@@ -57,25 +88,21 @@ class Application(Frame):
         self.adjust()
 
     def create_widgets(self):
-        self.Canvas = Paint(self, foreground="midnightblue")
-        self.Canvas.grid(row=0, column=0, rowspan=3, sticky=tkinter.N+tkinter.E+tkinter.S+tkinter.W)
-        self.AskColor = Button(self, text="Color", command=self.askcolor)
-        self.AskColor.grid(row=0, column=1, sticky=tkinter.N+tkinter.W)
-        self.ShowColor = Label(self, textvariable=self.Canvas.foreground)
-        self.ShowColor.grid(row=1, column=1, sticky=tkinter.N+tkinter.W+tkinter.E)
-        self.Quit = Button(self, text="Quit", command=self.quit)
-        self.Quit.grid(row=2, column=1, sticky=tkinter.N+tkinter.W)
+        paint_widget = Paint(self, foreground="midnightblue")
+        paint_widget.grid(row=self.PaintCell.row, column=self.PaintCell.column, sticky=tkinter.N+tkinter.E+tkinter.S+tkinter.W)
+
+        menu = Menu(paint_widget=paint_widget, master=self)
+        menu.grid(row=self.MenuCell.row, column=self.MenuCell.column, sticky=tkinter.N + tkinter.W)
 
     def adjust(self):
         """Adjust grid size/properties"""
-        # TODO Smart detecting resizeable/still cells
-        for i in range(self.size()[0]):
-            self.columnconfigure(i, weight=12)
-        for i in range(self.size()[1]):
-            self.rowconfigure(i, weight=12)
+        for column in range(self.size()[0]):
+            if column in [self.PaintCell.column]:
+                self.columnconfigure(column, weight=12)
 
-    def askcolor(self):
-        self.Canvas.foreground.set(colorchooser.askcolor()[1])
+        for row in range(self.size()[1]):
+            if row in [self.MenuCell.row, self.PaintCell.row]:
+                self.rowconfigure(row, weight=12)
 
 
 def main():
