@@ -54,8 +54,8 @@ class Menu(Frame):
         self.create_widgets()
 
     def create_widgets(self):
-        self.ask_color = Button(self, text="Color", command=self.ask_color)
-        self.ask_color.grid(row=0, column=0, sticky=tkinter.N + tkinter.W + tkinter.E)
+        ask_color = Button(self, text="Color", command=self.ask_color)
+        ask_color.grid(row=0, column=0, sticky=tkinter.N + tkinter.W + tkinter.E)
 
         # The longest color name as man page says http://www.tcl.tk/man/tcl8.5/TkCmd/colors.htm
         self.show_color = Label(
@@ -66,11 +66,11 @@ class Menu(Frame):
         self.set_color(self.paint_widget.foreground.get())
         self.show_color.grid(row=1, column=0, sticky=tkinter.N + tkinter.W + tkinter.E)
 
-        self.clear = Button(self, text="Clear", command=self.clear)
-        self.clear.grid(row=2, column=0, sticky=tkinter.N + tkinter.W + tkinter.E)
+        clear = Button(self, text="Clear", command=self.clear)
+        clear.grid(row=2, column=0, sticky=tkinter.N + tkinter.W + tkinter.E)
 
-        self.quit = Button(self, text="Quit", command=self.quit)
-        self.quit.grid(row=3, column=0, sticky=tkinter.N + tkinter.W + tkinter.E)
+        quit_button = Button(self, text="Quit", command=self.quit)
+        quit_button.grid(row=3, column=0, sticky=tkinter.N + tkinter.W + tkinter.E)
 
     def ask_color(self):
         color = colorchooser.askcolor()[1]
