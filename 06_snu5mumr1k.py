@@ -66,8 +66,11 @@ class Menu(Frame):
         self.set_color(self.paint_widget.foreground.get())
         self.show_color.grid(row=1, column=0, sticky=tkinter.N + tkinter.W + tkinter.E)
 
+        self.clear = Button(self, text="Clear", command=self.clear)
+        self.clear.grid(row=2, column=0, sticky=tkinter.N + tkinter.W + tkinter.E)
+
         self.quit = Button(self, text="Quit", command=self.quit)
-        self.quit.grid(row=2, column=0, sticky=tkinter.N + tkinter.W + tkinter.E)
+        self.quit.grid(row=3, column=0, sticky=tkinter.N + tkinter.W + tkinter.E)
 
     def ask_color(self):
         color = colorchooser.askcolor()[1]
@@ -84,6 +87,9 @@ class Menu(Frame):
 
         inverted_color = [65535 - i for i in color]
         return f"#{inverted_color[0]:x}{inverted_color[1]:x}{inverted_color[2]:x}"
+
+    def clear(self):
+        self.paint_widget.delete(tkinter.ALL)
 
 
 class CopyMenu(Frame):
@@ -111,6 +117,8 @@ class CopyMenu(Frame):
 
     def copy(self, source, destination):
         def do_copy():
+            destination.delete(tkinter.ALL)
+
             for item in source.find_all():
                 coordinates = source.coords(item)
                 fill = source.itemcget(item, "fill")
