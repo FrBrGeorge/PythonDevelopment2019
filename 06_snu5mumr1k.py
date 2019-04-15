@@ -54,24 +54,40 @@ class Paint(Canvas):
         self.foreground.set(foreground)
 
         super().__init__(master=master, *args, **kwargs)
-        self.bind("<Button-1>", self.mousedown)
-        self.bind("<B1-Motion>", self.mousemove)
-        self.bind("<ButtonRelease-1>", self.mouseup)
 
-    def mousedown(self, event):
-        """Store mousedown coords"""
-        self.x0, self.y0 = event.x, event.y
-        self.cursor = None
+        self.bind("<Button-1>", self.left_mouse_down)
+        self.bind("<B1-Motion>", self.left_mouse_move)
+        self.bind("<ButtonRelease-1>", self.left_mouse_up)
 
-    def mousemove(self, event):
-        """Do sometheing when drag a mouse"""
-        if self.cursor is not None:
-            self.delete(self.cursor)
-        self.cursor = self.create_line((self.x0, self.y0, event.x, event.y), fill=self.foreground.get())
+        self.bind("<Button-3>", self.right_mouse_down)
+        self.bind("<B3-Motion>", self.right_mouse_move)
+        self.bind("<ButtonRelease-3>", self.right_mouse_up)
 
-    def mouseup(self, event):
-        """Dragging is done"""
-        self.cursor = None
+    def left_mouse_down(self, event):
+        self.left_x, self.left_y = event.x, event.y
+        self.left_cursor = None
+
+    def left_mouse_move(self, event):
+        if self.left_cursor is not None:
+            self.delete(self.left_cursor)
+        self.left_cursor = self.create_line((self.left_x, self.left_y, event.x, event.y), fill=self.foreground.get())
+
+    def left_mouse_up(self, event):
+        self.left_cursor = None
+
+    def right_mouse_down(self, event):
+        self.position = event.x, event.y
+        self.dragged_line = self.find_closest(*self.position)
+
+    def right_mouse_move(self, event):
+        if self.dragged_line is not None:
+            x, y = self.position
+            self.move(self.dragged_line, event.x - x, event.y - y)
+            self.position = event.x, event.y
+
+    def right_mouse_up(self, event):
+        self.dragged_line = None
+        self.position = None, None
 
 
 class Menu(Frame):
