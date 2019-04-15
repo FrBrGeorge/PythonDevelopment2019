@@ -20,7 +20,7 @@ import tkinter
 
 class Paint(Canvas):
     """Canvas with simple drawing"""
-    def __init__(self, master=None, *args, foreground="black", **kwargs):
+    def __init__(self, *args, master=None, foreground="black", **kwargs):
         self.foreground = StringVar()
         self.foreground.set(foreground)
 
@@ -83,9 +83,40 @@ class Menu(Frame):
             color = self.winfo_rgb(color)
 
         inverted_color = [65535 - i for i in color]
-        print(inverted_color)
         return f"#{inverted_color[0]:x}{inverted_color[1]:x}{inverted_color[2]:x}"
 
+
+class CopyMenu(Frame):
+    def __init__(self, paint_widget, buffer_widget, master=None):
+        self.paint_widget = paint_widget
+        self.buffer_widget = buffer_widget
+
+        super().__init__(master=master)
+        self.create_widgets()
+
+    def create_widgets(self):
+        copy_from_buffer = Button(
+            self,
+            text="<-",
+            command=self.copy(self.buffer_widget, self.paint_widget),
+        )
+        copy_from_buffer.grid(row=0, column=0)
+
+        copy_to_buffer = Button(
+            self,
+            text="->",
+            command=self.copy(self.paint_widget, self.buffer_widget),
+        )
+        copy_to_buffer.grid(row=1, column=0)
+
+    def copy(self, source, destination):
+        def do_copy():
+            for item in source.find_all():
+                coordinates = source.coords(item)
+                fill = source.itemcget(item, "fill")
+                destination.create_line(coordinates, fill=fill)
+
+        return do_copy
 
 
 class Application(Frame):
@@ -97,19 +128,50 @@ class Application(Frame):
         row = 0
         column = 1
 
+    class CopyMenuCell:
+        row = 0
+        column = 2
+
+    class BufferPaintCell:
+        row = 0
+        column = 3
+
     def __init__(self, master=None, Title="Application"):
         super().__init__(master=master)
 
         self.master.rowconfigure(0, weight=1)
         self.master.columnconfigure(0, weight=1)
         self.master.title(Title)
-        self.grid(sticky=tkinter.N+tkinter.E+tkinter.S+tkinter.W)
+        self.grid(sticky=tkinter.N + tkinter.E + tkinter.S + tkinter.W)
         self.create_widgets()
         self.adjust()
 
     def create_widgets(self):
-        paint_widget = Paint(self, foreground="midnightblue")
-        paint_widget.grid(row=self.PaintCell.row, column=self.PaintCell.column, sticky=tkinter.N+tkinter.E+tkinter.S+tkinter.W)
+        paint_widget = Paint(
+            foreground="midnightblue",
+            master=self,
+        )
+        paint_widget.grid(
+            column=self.PaintCell.column,
+            row=self.PaintCell.row,
+            sticky=tkinter.N+tkinter.E+tkinter.S+tkinter.W,
+        )
+
+        buffer_widget = Canvas(
+            master=self,
+        )
+        buffer_widget.grid(
+            column=self.BufferPaintCell.column,
+            row=self.BufferPaintCell.row,
+            sticky=tkinter.N+tkinter.E+tkinter.S+tkinter.W,
+        )
+
+        copy_menu = CopyMenu(
+            buffer_widget=buffer_widget,
+            master=self,
+            paint_widget=paint_widget,
+        )
+        copy_menu.grid(row=self.CopyMenuCell.row, column=self.CopyMenuCell.column, sticky=tkinter.N + tkinter.E + tkinter.W)
 
         menu = Menu(paint_widget=paint_widget, master=self)
         menu.grid(row=self.MenuCell.row, column=self.MenuCell.column, sticky=tkinter.N + tkinter.W)
@@ -117,12 +179,11 @@ class Application(Frame):
     def adjust(self):
         """Adjust grid size/properties"""
         for column in range(self.size()[0]):
-            if column in [self.PaintCell.column]:
+            if column in [self.PaintCell.column, self.BufferPaintCell.column]:
                 self.columnconfigure(column, weight=12)
 
         for row in range(self.size()[1]):
-            if row in [self.MenuCell.row, self.PaintCell.row]:
-                self.rowconfigure(row, weight=12)
+            self.rowconfigure(row, weight=12)
 
 
 def main():
