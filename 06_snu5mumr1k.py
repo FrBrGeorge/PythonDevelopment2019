@@ -5,6 +5,10 @@
 Пример объектной организации кода
 """
 
+from pathlib import Path
+import json
+import logging
+
 from tkinter import (
     Button,
     Canvas,
@@ -14,8 +18,33 @@ from tkinter import (
     Tk,
 
     colorchooser,
+    filedialog,
 )
 import tkinter
+
+logger = logging.getLogger(__name__)
+
+
+def get_lines_descriptions(canvas):
+    result = []
+    for item in canvas.find_all():
+        result.append(
+            {
+                "coordinates": canvas.coords(item),
+                "config": {
+                    "fill": canvas.itemcget(item, "fill"),
+                },
+            }
+        )
+    return result
+
+
+def restore_lines_from_descriptions(canvas, lines):
+    canvas.delete(tkinter.ALL)
+
+    for line in lines:
+        canvas.create_line(line["coordinates"], **line["config"])
+
 
 
 class Paint(Canvas):
@@ -69,8 +98,14 @@ class Menu(Frame):
         clear = Button(self, text="Clear", command=self.clear)
         clear.grid(row=2, column=0, sticky=tkinter.N + tkinter.W + tkinter.E)
 
+        save_painting = Button(self, text="Save painting as ...", command=self.save(self.paint_widget))
+        save_painting.grid(row=3, column=0, sticky=tkinter.N + tkinter.W + tkinter.E)
+
+        save_painting = Button(self, text="Load", command=self.load(self.paint_widget))
+        save_painting.grid(row=4, column=0, sticky=tkinter.N + tkinter.W + tkinter.E)
+
         quit_button = Button(self, text="Quit", command=self.quit)
-        quit_button.grid(row=3, column=0, sticky=tkinter.N + tkinter.W + tkinter.E)
+        quit_button.grid(row=5, column=0, sticky=tkinter.N + tkinter.W + tkinter.E)
 
     def ask_color(self):
         color = colorchooser.askcolor()[1]
@@ -90,6 +125,47 @@ class Menu(Frame):
 
     def clear(self):
         self.paint_widget.delete(tkinter.ALL)
+
+    def save(self, canvas):
+        def do_save():
+            description = get_lines_descriptions(canvas)
+            filename = filedialog.asksaveasfilename(
+                filetypes=[
+                    ("JSON files", "*.json"),
+                ],
+                initialdir=".",
+            )
+            if not filename:
+                logger.info("Empty filename")
+                return
+
+            destination = Path(filename)
+            with destination.open("w") as f:
+                json.dump(description, f)
+
+        return do_save
+
+    def load(self, canvas):
+        def do_load():
+            filename = filedialog.askopenfilename(
+                filetypes=[
+                    ("ALL files", "*.*"),
+                    ("JSON files", "*.json"),
+                ],
+                initialdir=".",
+                defaultextension=".json",
+            )
+            if not filename:
+                logger.info("Empty filename")
+                return
+
+            destination = Path(filename)
+            with destination.open() as f:
+                lines = json.load(f)
+
+            restore_lines_from_descriptions(canvas, lines)
+
+        return do_load
 
 
 class CopyMenu(Frame):
@@ -117,12 +193,8 @@ class CopyMenu(Frame):
 
     def copy(self, source, destination):
         def do_copy():
-            destination.delete(tkinter.ALL)
-
-            for item in source.find_all():
-                coordinates = source.coords(item)
-                fill = source.itemcget(item, "fill")
-                destination.create_line(coordinates, fill=fill)
+            lines = get_lines_descriptions(source)
+            restore_lines_from_descriptions(destination, lines)
 
         return do_copy
 
@@ -200,4 +272,6 @@ def main():
 
 
 if __name__ == "__main__":
+    logger.setLevel("DEBUG")
+
     main()
