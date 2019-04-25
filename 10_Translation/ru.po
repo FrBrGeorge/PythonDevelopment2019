@@ -24,7 +24,7 @@ msgstr "Футы в метры"
 
 #: app.py:29
 msgid "LogoEN.png"
-msgstr ""
+msgstr "LogoRU.png"
 
 #: app.py:36
 msgid "Calculate"
@@ -32,12 +32,12 @@ msgstr "Вычислить"
 
 #: app.py:39
 msgid "feet"
-msgstr ""
+msgstr "футов"
 
 #: app.py:40
 msgid "is equivalent to"
-msgstr ""
+msgstr "то же самое, что"
 
 #: app.py:41
 msgid "meters"
-msgstr ""
+msgstr "метров"
