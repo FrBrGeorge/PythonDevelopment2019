@@ -16,7 +16,7 @@ datapath = os.path.dirname(sys.argv[0])
 gettext.install('app', datapath)
 
 root = Tk()
-root.title(_("Feet to Meters"))
+root.title(_("Feet to meters"))
 
 mainframe = Frame(root, padx=3, pady=12)
 mainframe.grid(column=0, row=0, sticky=(N, W, E, S))
