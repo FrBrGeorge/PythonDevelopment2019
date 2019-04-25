@@ -13,7 +13,7 @@ def calculate(*args):
         pass
 
 datapath = os.path.dirname(sys.argv[0])
-gettext.install('messages', datapath)
+gettext.install('app', datapath)
 
 root = Tk()
 root.title(_("Feet to Meters"))
