@@ -10,18 +10,19 @@ def calculate(*args):
     try:
         value = float(feet.get())
         meters.set((0.3048 * value * 10000.0 + 0.5) / 10000.0)
+        update_labels(feet.get(), meters.get())
     except ValueError:
         pass
 
 
-def update_labels(m=0, f=0):
+def update_labels(f=0, m=0):
     m, f = int(float(m)), int(float(f))
-    mlabel['text'] = _("meters")
-    flabel['text'] = _("feet")
+    mlabel['text'] = ngettext("meter", "meters", m)
+    flabel['text'] = ngettext("foot", "feet", f)
 
 
 datapath = os.path.dirname(sys.argv[0])
-gettext.install('app', datapath)
+gettext.install('app', datapath, names=("ngettext",))
 
 root = Tk()
 root.title(_("Feet to meters"))
