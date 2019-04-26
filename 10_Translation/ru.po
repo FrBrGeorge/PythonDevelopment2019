@@ -6,7 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PythonDevelopment 2019\n"
-"POT-Creation-Date: 2019-04-26 10:33+0300\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-04-26 11:19+0300\n"
 "PO-Revision-Date: 2019-04-26 10:25+0300\n"
 "Last-Translator: Fr. Br. George <frbrgeorge@gmail.com>\n"
 "Language-Team: Russian\n"
@@ -18,26 +19,36 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: app.py:17
-msgid "meters"
-msgstr "метров"
+#: app.py:20
+#, fuzzy
+msgid "meter"
+msgid_plural "meters"
+msgstr[0] "метров"
+msgstr[1] "метров"
+msgstr[2] "метров"
 
-#: app.py:18
-msgid "feet"
-msgstr "футов"
+#: app.py:21
+msgid "foot"
+msgid_plural "feet"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
 
-#: app.py:25
+#: app.py:28
 msgid "Feet to meters"
 msgstr "Футы в метры"
 
-#: app.py:35
+#: app.py:38
 msgid "LogoEN.png"
 msgstr "LogoRU.png"
 
-#: app.py:42
+#: app.py:46
 msgid "Calculate"
 msgstr "Вычислить"
 
-#: app.py:47
+#: app.py:51
 msgid "is equivalent to"
 msgstr "то же самое, что"
+
+#~ msgid "feet"
+#~ msgstr "футов"
