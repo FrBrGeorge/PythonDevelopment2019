@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PythonDevelopment 2019\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-04-26 11:19+0300\n"
-"PO-Revision-Date: 2019-04-26 10:25+0300\n"
+"PO-Revision-Date: 2019-04-26 11:27+0300\n"
 "Last-Translator: Fr. Br. George <frbrgeorge@gmail.com>\n"
 "Language-Team: Russian\n"
 "Language: ru\n"
@@ -20,19 +20,18 @@ msgstr ""
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 #: app.py:20
-#, fuzzy
 msgid "meter"
 msgid_plural "meters"
-msgstr[0] "метров"
-msgstr[1] "метров"
+msgstr[0] "метр"
+msgstr[1] "метра"
 msgstr[2] "метров"
 
 #: app.py:21
 msgid "foot"
 msgid_plural "feet"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "фут"
+msgstr[1] "фута"
+msgstr[2] "футов"
 
 #: app.py:28
 msgid "Feet to meters"
